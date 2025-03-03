@@ -5,7 +5,9 @@ import com.example.ogiyo.store.dto.response.GetStoreResponseDto;
 import com.example.ogiyo.store.entity.Store;
 import com.example.ogiyo.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -69,6 +71,10 @@ public class StoreService {
 
     public void updateStore(Long storeId, String status) {
 
+        if (Store.Status.PERMANENTLY_CLOSED.toString().equals(status)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "폐업 할 수 없습니다.");
+        }
+
         Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
 
         savedStore.changeStatus(Store.Status.valueOf(status));
@@ -77,8 +83,11 @@ public class StoreService {
     }
 
     public void deleteStore(Long storeId) {
+
         Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
+
         savedStore.changeStatus(Store.Status.PERMANENTLY_CLOSED);
+
         storeRepository.save(savedStore);
     }
 }
