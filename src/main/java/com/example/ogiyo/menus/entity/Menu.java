@@ -1,50 +1,67 @@
 package com.example.ogiyo.menus.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
+@Table(name = "reviews")
+public class Review {
 
-public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long reviewId; // 리뷰 ID (PK)
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // 리뷰 작성자 (FK)
 
-    private Long menuId; // PK
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
+    private Store store; // 가게 (FK)
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    private Order order; // 주문 (1:1 관계, 한 주문당 하나의 리뷰만 작성 가능)
 
-    private Store store; // FK (가게)
+    @Column(nullable = false)
+    private Integer rating; // 별점 (1~5점)
 
+    @Column(columnDefinition = "TEXT")
+    private String content; // 리뷰 내용
 
-    private String category; // 한식, 양식 등
+    @Column(nullable = false)
+    private Boolean isOwnerReplied; // 사장님이 답변했는지 여부
 
+    private LocalDateTime createdAt; // 리뷰 작성일
+    private LocalDateTime updatedAt; // 리뷰 수정일
 
-    private String menuName; // 메뉴명
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.isOwnerReplied = false;
+    }
 
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
-    private int price; // 가격
+    public void updateReview(String content, int rating) {
+        this.content = content;
+        this.rating = rating;
+        this.updatedAt = LocalDateTime.now();
+    }
 
-
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-
-    private LocalDateTime modifiedAt = LocalDateTime.now();
-
-
-    private boolean status; // true(판매중), false(판매중지)
-
-
-    private int searchCount; // 조회수
-
-
+    public void setOwnerReplied() {
+        this.isOwnerReplied = true;
+    }
 }
+
 
