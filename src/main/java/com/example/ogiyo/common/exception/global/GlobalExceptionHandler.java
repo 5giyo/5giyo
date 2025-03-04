@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,7 +23,7 @@ public class GlobalExceptionHandler {
         String errorCode;
         String errorMessage;
 
-        if (ex instanceof IllegalArgumentException || ex instanceof BadCredentialsException || ex instanceof DuplicateKeyException) {
+        if (ex instanceof IllegalArgumentException || ex instanceof DuplicateKeyException) {
             httpStatus = HttpStatus.BAD_REQUEST;
             errorCode = "BAD_REQUEST";
             errorMessage = ex.getMessage();
