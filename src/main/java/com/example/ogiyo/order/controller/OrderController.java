@@ -22,10 +22,10 @@ public class OrderController {
     //주문하기 TODO: 추후에 수정예정
     @PostMapping
     public ResponseEntity<OrderResponseDto> addOrder(
-            @PathVariable Long userId,
+            @PathVariable Long userId,Long menuId,
             @Valid @RequestBody AddOrderRequestDto addorderRequestDto
     ) {
-        return ResponseEntity.ok(orderServiceImpl.addOrder(userId,menuId,addorderRequestDto);
+        return ResponseEntity.ok(orderServiceImpl.addOrder(userId,menuId,addorderRequestDto));
     }
     
     //주문전체조회 TODO: 요청값찾기.

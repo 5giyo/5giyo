@@ -17,7 +17,7 @@ public interface CouponService {
 
     CouponResponseDto findOrderById(Long orderId);
 
-    CouponResponseDto updateCoupon(Long userid, UpdateCouponRequestDto dto);
+    void updateCoupon(Long userid, UpdateCouponRequestDto dto);
 
     void deleteCoupon(Long orderId);
 }

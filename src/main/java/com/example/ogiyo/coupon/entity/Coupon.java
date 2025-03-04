@@ -6,12 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = 'Coupons')
+@Table(name = "coupons")
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
     private String couponCode;
     private String couponType;
     private int discountPrice;
@@ -20,7 +19,7 @@ public class Coupon {
     private int minDiscountPrice;
     private String status;
 
-    @OneToMany
+    @ManyToOne
     private User user;
 
 

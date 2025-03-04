@@ -18,6 +18,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponResponseDto createCoupon(Long userId, CreateCouponRequestDto createCouponRequestDto) {
+        couponRepository.findById(userId).orElseThrow(()->)
         return null;
     }
 
@@ -32,12 +33,12 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponResponseDto updateCoupon(Long userid, UpdateCouponRequestDto dto) {
-        return null;
+    public void updateCoupon(Long userid, UpdateCouponRequestDto dto) {
+
     }
 
     @Override
     public void deleteCoupon(Long couponId) {
-        return couponRepository.deleteById(couponId);
+        couponRepository.deleteById(couponId);
     }
 }

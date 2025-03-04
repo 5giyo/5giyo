@@ -11,28 +11,28 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderId;
-    private String paymentMethod;
-    private int totalPrice;
     private int quantity;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; //주문상태
 
-//    @OneToMany
-//    private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menus")
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "members")
+    private Member member;
 
     public Order() {
 
     }
 
-    public Order(String paymentMethod, int totalPrice, OrderStatus orderStatus) {
-        this.paymentMethod = paymentMethod;
-        this.totalPrice = totalPrice;
+    public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public void update(String paymentMethod, OrderStatus orderStatus,int quantity) {
-        this.paymentMethod = paymentMethod;
+    public void update(OrderStatus orderStatus,int quantity) {
         this.orderStatus = orderStatus;
         this.quantity = quantity;
 
