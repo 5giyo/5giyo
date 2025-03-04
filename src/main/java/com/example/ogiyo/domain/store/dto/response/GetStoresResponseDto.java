@@ -1,6 +1,6 @@
-package com.example.ogiyo.store.dto.response;
+package com.example.ogiyo.domain.store.dto.response;
 
-import com.example.ogiyo.store.entity.Store;
+import com.example.ogiyo.domain.store.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

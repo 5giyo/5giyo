@@ -1,9 +1,9 @@
-package com.example.ogiyo.store.service;
+package com.example.ogiyo.domain.store.service;
 
-import com.example.ogiyo.store.dto.response.CreateStoreResponseDto;
-import com.example.ogiyo.store.dto.response.GetStoreResponseDto;
-import com.example.ogiyo.store.entity.Store;
-import com.example.ogiyo.store.repository.StoreRepository;
+import com.example.ogiyo.domain.store.dto.response.GetStoreResponseDto;
+import com.example.ogiyo.domain.store.entity.Store;
+import com.example.ogiyo.domain.store.repository.StoreRepository;
+import com.example.ogiyo.domain.store.dto.response.CreateStoreResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,17 @@ public class StoreService {
     private final StoreRepository storeRepository;
 //    private final MenuService menuService; //추후 추가
 
+    public Store findByStoreWithUserInfo(Long storeId) {
+
+        Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
+
+        // 사용자 검증
+
+        return savedStore;
+    }
+
     public List<?> findStores(String storeName) {
+
         if (storeName == null) {
             return storeRepository.findAll();
         }
@@ -26,6 +36,7 @@ public class StoreService {
     }
 
     public GetStoreResponseDto findStoreById(Long storeId) {
+
         Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
 
         return new GetStoreResponseDto(
@@ -39,6 +50,9 @@ public class StoreService {
     }
 
     public CreateStoreResponseDto saveStore(String storeName, String operatingHours, String announcement, Long minPrice, String imageUrl) {
+
+        // 사장님은 가게를 최대 3개까지만 운영할 수 있습니다.
+        // 사장님은 폐업시 가게를 추가로 등록할 수 있게 됩니다.
         // 메뉴 저장하는 부분 추후 추가
         Store store = Store.builder()
                 .storeName(storeName)
@@ -48,8 +62,6 @@ public class StoreService {
                 .imageUrl(imageUrl)
                 .status(Store.Status.OPEN)
                 .build();
-
-        // 운영시간으로 영업, 마감, 폐업 선택
 
         Store savedStore = storeRepository.save(store);
         return new CreateStoreResponseDto(savedStore.getStoreId(), savedStore.getStoreName(), Store.Status.OPEN.toString());
