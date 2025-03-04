@@ -1,13 +1,10 @@
-package com.example.ogiyo.store.entity;
+package com.example.ogiyo.domain.store.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -37,6 +34,9 @@ public class Store{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+//    @OneToOne
+//    User user;
 
 //    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
 //    List<Menu> menus = new ArrayList<>();

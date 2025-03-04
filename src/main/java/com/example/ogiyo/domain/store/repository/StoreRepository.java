@@ -1,7 +1,7 @@
-package com.example.ogiyo.store.repository;
+package com.example.ogiyo.domain.store.repository;
 
-import com.example.ogiyo.store.dto.response.GetStoresResponseDto;
-import com.example.ogiyo.store.entity.Store;
+import com.example.ogiyo.domain.store.entity.Store;
+import com.example.ogiyo.domain.store.dto.response.GetStoresResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
@@ -14,6 +14,10 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 //    @Query("SELECT s FROM Store s JOIN FETCH Menu m on m.store = s WHERE s.storeId = :storeId")
 //    Optional<Store> findById(@Param("storeId") Long storeId);
 
+//    @Query("SELECT s FROM Store s JOIN FETCH s.menus m ON m.store = s WHERE s.storeName LIKE CONCAT('%', :name, '%') OR m.menuName LIKE CONCAT('%', :name, '%')")
+//    Optional<Store> findAllByName(@Param("name") String name);
+
+    // exact name 으로 find -> Like 로 수정?
     List<Store> findByStoreNameAndStatusNot(String storeName, Store.Status status);
 
     default Store findByIdOrElseThrow(Long storeId) {

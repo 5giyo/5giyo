@@ -1,11 +1,11 @@
-package com.example.ogiyo.store.controller;
+package com.example.ogiyo.domain.store.controller;
 
-import com.example.ogiyo.store.dto.request.CreateStoreRequestDto;
-import com.example.ogiyo.store.dto.request.UpdateStoreRequestDto;
-import com.example.ogiyo.store.dto.request.UpdateStoreStatusRequestDto;
-import com.example.ogiyo.store.dto.response.CreateStoreResponseDto;
-import com.example.ogiyo.store.dto.response.GetStoreResponseDto;
-import com.example.ogiyo.store.service.StoreService;
+import com.example.ogiyo.domain.store.dto.request.UpdateStoreRequestDto;
+import com.example.ogiyo.domain.store.dto.request.UpdateStoreStatusRequestDto;
+import com.example.ogiyo.domain.store.dto.response.GetStoreResponseDto;
+import com.example.ogiyo.domain.store.service.StoreService;
+import com.example.ogiyo.domain.store.dto.request.CreateStoreRequestDto;
+import com.example.ogiyo.domain.store.dto.response.CreateStoreResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +14,8 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/stores")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/stores")
 public class StoreController {
     private final StoreService storeService;
 
