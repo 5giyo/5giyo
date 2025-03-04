@@ -6,61 +6,45 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "menus")
+@Getter @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Table(name = "reviews")
-public class Review {
+public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewId; // 리뷰 ID (PK)
+    private Long menuId;  // PK
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // 리뷰 작성자 (FK)
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
-    private Store store; // 가게 (FK)
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false, unique = true)
-    private Order order; // 주문 (1:1 관계, 한 주문당 하나의 리뷰만 작성 가능)
+    private Store store;  // FK
 
     @Column(nullable = false)
-    private Integer rating; // 별점 (1~5점)
-
-    @Column(columnDefinition = "TEXT")
-    private String content; // 리뷰 내용
+    private String category; // 카테고리 (한식, 양식 등)
 
     @Column(nullable = false)
-    private Boolean isOwnerReplied; // 사장님이 답변했는지 여부
+    private String menuName; // 메뉴명
 
-    private LocalDateTime createdAt; // 리뷰 작성일
-    private LocalDateTime updatedAt; // 리뷰 수정일
+    @Column(nullable = false)
+    private int price; // 가격
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.isOwnerReplied = false;
-    }
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now(); // 생성 날짜
+
+    @Column(nullable = false)
+    private LocalDateTime modifiedAt = LocalDateTime.now(); // 수정 날짜
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status; // 상태 (판매중, 품절 등)
+
+    @Column(nullable = false)
+    private int searchCount = 0; // 검색 횟수
 
     @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void updateReview(String content, int rating) {
-        this.content = content;
-        this.rating = rating;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void setOwnerReplied() {
-        this.isOwnerReplied = true;
+    public void updateTimestamp() {
+        this.modifiedAt = LocalDateTime.now();
     }
 }
 
