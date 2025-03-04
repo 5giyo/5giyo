@@ -1,8 +1,6 @@
-package com.example.ogiyo.ceoReview.controller;
+package com.example.ogiyo.domain.ceoReview.controller;
 
-import com.example.ogiyo.ceoReview.service.CeoReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

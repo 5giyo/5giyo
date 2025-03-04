@@ -1,4 +1,4 @@
-package com.example.ogiyo.review.entity;
+package com.example.ogiyo.domain.review.entity;
 
 import com.example.ogiyo.common.BaseEntity;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package com.example.ogiyo.review.dto.response;
+package com.example.ogiyo.domain.review.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

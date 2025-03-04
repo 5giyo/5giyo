@@ -1,7 +1,7 @@
-package com.example.ogiyo.ceoReview.entity;
+package com.example.ogiyo.domain.ceoReview.entity;
 
 import com.example.ogiyo.common.BaseEntity;
-import com.example.ogiyo.review.entity.Review;
+import com.example.ogiyo.domain.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

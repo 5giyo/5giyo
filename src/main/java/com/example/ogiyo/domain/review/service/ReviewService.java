@@ -1,13 +1,16 @@
-package com.example.ogiyo.review.service;
+package com.example.ogiyo.domain.review.service;
 
 import com.example.ogiyo.common.dto.ResponseDto;
-import com.example.ogiyo.review.dto.request.SaveReviewRequestDto;
-import com.example.ogiyo.review.dto.request.UpdateReviewRequestDto;
-import com.example.ogiyo.review.dto.response.GetReviewResponseDto;
-import com.example.ogiyo.review.dto.response.PagingReviewResponseDto;
-import com.example.ogiyo.review.dto.response.SaveReviewResponseDto;
-import com.example.ogiyo.review.entity.Review;
-import com.example.ogiyo.review.repository.ReviewRepository;
+import com.example.ogiyo.domain.member.service.MemberService;
+import com.example.ogiyo.domain.store.service.StoreService;
+import com.example.ogiyo.order.service.OrderService;
+import com.example.ogiyo.domain.review.dto.request.SaveReviewRequestDto;
+import com.example.ogiyo.domain.review.dto.request.UpdateReviewRequestDto;
+import com.example.ogiyo.domain.review.dto.response.GetReviewResponseDto;
+import com.example.ogiyo.domain.review.dto.response.PagingReviewResponseDto;
+import com.example.ogiyo.domain.review.dto.response.SaveReviewResponseDto;
+import com.example.ogiyo.domain.review.entity.Review;
+import com.example.ogiyo.domain.review.repository.ReviewRepository;
 import com.example.ogiyo.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,7 @@ public class ReviewService {
     public ResponseDto<SaveReviewResponseDto> saveReview(Long storeId, SaveReviewRequestDto reviewRequestDto) {
         Review review = new Review(
                 storeService.getStore(storeId),
-                memberService.findMember(1),
+                memberService.findById(1),
                 orderService.findOrder(reviewRequestDto.getOrderId()),
                 reviewRequestDto.getRating(),
                 reviewRequestDto.getContent()

@@ -1,9 +1,9 @@
-package com.example.ogiyo.review.controller;
+package com.example.ogiyo.domain.review.controller;
 
 import com.example.ogiyo.common.dto.ResponseDto;
-import com.example.ogiyo.review.dto.request.SaveReviewRequestDto;
-import com.example.ogiyo.review.dto.request.UpdateReviewRequestDto;
-import com.example.ogiyo.review.service.ReviewService;
+import com.example.ogiyo.domain.review.dto.request.SaveReviewRequestDto;
+import com.example.ogiyo.domain.review.dto.request.UpdateReviewRequestDto;
+import com.example.ogiyo.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
