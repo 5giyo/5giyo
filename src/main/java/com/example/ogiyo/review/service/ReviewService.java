@@ -8,6 +8,7 @@ import com.example.ogiyo.review.dto.response.PagingReviewResponseDto;
 import com.example.ogiyo.review.dto.response.SaveReviewResponseDto;
 import com.example.ogiyo.review.entity.Review;
 import com.example.ogiyo.review.repository.ReviewRepository;
+import com.example.ogiyo.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +27,7 @@ public class ReviewService {
 
     public ResponseDto<SaveReviewResponseDto> saveReview(Long storeId, SaveReviewRequestDto reviewRequestDto) {
         Review review = new Review(
-                storeService.findStore(storeId),
+                storeService.getStore(storeId),
                 memberService.findMember(1),
                 orderService.findOrder(reviewRequestDto.getOrderId()),
                 reviewRequestDto.getRating(),
