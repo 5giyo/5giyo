@@ -1,4 +1,4 @@
-package com.example.ogiyo.store.dto.request;
+package com.example.ogiyo.domain.store.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
