@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: Ogiyo
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/Ogiyo
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  data:
+    redis:
+      password: 1234
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-idle: 5
+          min-idle: 2
+          max-active: 5
+
+
+jwt:
+  secret:
+    key: DBWrjBFv78AzkggUVxKiPngUEfvR0uECpz4qJut+jLM=
+
+
