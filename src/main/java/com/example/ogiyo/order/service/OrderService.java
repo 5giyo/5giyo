@@ -1,5 +1,6 @@
 package com.example.ogiyo.order.service;
 
+import com.example.ogiyo.order.dto.request.AddCartRequestDto;
 import com.example.ogiyo.order.dto.request.AddOrderRequestDto;
 import com.example.ogiyo.order.dto.response.OrderResponseDto;
 import com.example.ogiyo.order.entity.OrderStatus;
@@ -18,4 +19,11 @@ public interface OrderService {
     void updateOrder(Long id, OrderStatus orderStatus, String paymentMethod, int quantity);
 
     void deleteOrder(Long orderId);
+
+    void addCart(Long userId, Long menuId, int quantity);
+
+    void removeCart(Long userId, Long menuId);
+
+    int calculateTotal(Long userId);
+
 }

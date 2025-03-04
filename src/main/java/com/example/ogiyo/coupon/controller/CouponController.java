@@ -20,11 +20,11 @@ public class CouponController {
 
     @GetMapping
     public List<Coupon> getAllCoupons() {
-        return
+
     }
 
     @GetMapping
-    public ResponseEntity<Coupon> getCouponById(@RequestParam("id") long id) {
+    public ResponseEntity<Coupon> getCouponById(@RequestParam("id") Long id) {
 
     }
 
@@ -35,7 +35,7 @@ public class CouponController {
 
     @DeleteMapping
     public void deleteCoupon(@RequestBody Coupon coupon) {
-
+        couponServiceimpl.deleteCoupon(coupon.getId());
     }
 
 

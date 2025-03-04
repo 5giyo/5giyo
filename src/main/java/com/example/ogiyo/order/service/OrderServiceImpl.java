@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.*;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -21,27 +21,12 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-//    private final MenuRepository menuRepository;
-//    private final UserRepository userRepository;
     private final RedisTemplate<Long, Order> redisTemplate;
 
 
-    /*
-    * 메뉴에 있는것.
-    * 메뉴이름
-    * 가격
-    * 상태
-    * */
-    //주문하기 상태 배달중으로 변경.
-    /*
-    * 주문할때 필요한것
-    * 가격과 수량
-    * 상태(매진인지 아닌지) 매진이라면 예외처리
-    * */
     @Override
     public OrderResponseDto addOrder(Long userId, Long menuId, AddOrderRequestDto addOrderRequestDto) {
         User user =
-
 
         Menu menu = menuRepository.findById(menuId).orElseThrow(()->
                 new InvalidRequestException("메뉴를 찾을 수 없습니다."));
@@ -77,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrder(Long orderId, OrderStatus orderStatus, String paymentMethod, int quantity){
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(()->new RuntimeException("찾을 수 없는 주문입니다."));
-
         order.update(paymentMethod,
                 orderStatus,
                 quantity
@@ -90,16 +74,23 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(orderId);
     }
 
+    //TODO: 장바구니 추가하기
+    @Override
+    public void addCart(Long userId, Long menuId, int quantity) {
 
+    }
 
-    //장바구니에 메뉴 추가하기
+    //TODO: 장바구니 비우기
+    @Override
+    public void removeCart(Long userId, Long menuId) {
 
+    }
 
-    //장바구니에 메뉴 삭제하기
-
-    //장바구니 메뉴 수정하기
-
-    //장바구니 조회하기
+    //TODO: 총금액 계산하기?
+    @Override
+    public int calculateTotal(Long userId) {
+        return 0;
+    }
 
     //장바구니 구현 후 장바구니에 있는 물건들의 총 가격합 계산하는 메서드
     private int getTotalPrice(Long orderId) {
@@ -115,11 +106,12 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
-    private Order saveOrder(Order order) {
-        return orderRepository.save(order);
-    }
-
     private void cacheOrder(Order order) {
         redisTemplate.opsForValue().set(order.getOrderId(), order,24, TimeUnit.HOURS);
+    }
+
+    //TODO:findOrder entity반환하는 메서드 필요.
+    public Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(()->new RuntimeException("찾을수 없는 주문입니다."));
     }
 }
