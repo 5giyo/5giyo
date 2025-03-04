@@ -1,0 +1,29 @@
+server:
+  port: ${PORT}
+
+spring:
+  application:
+    name: 5giyo
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  #  ssl:
+  #    key-store: classpath:${SSL_FILE}
+  #    key-store-type: PKCS12
+  #    key-store-password: ${SSL_PASSWORD}
+  #    key-password: ${SSL_PASSWORD}
+
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.MySQLDialect
