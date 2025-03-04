@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface OrderService {
 
-    OrderResponseDto addOrder(Long userId, Long menuId, AddOrderRequestDto addOrderRequestDto);
+    void  addOrder(Long userId, Long menuId, AddOrderRequestDto addOrderRequestDto);
+//    OrderResponseDto
+//    List<OrderResponseDto> findAllOrders(Long userId);
 
-    List<OrderResponseDto> findAllOrders(Long userId);
-
-    OrderResponseDto findOrderById(Long orderId);
-
-    void updateOrder(Long id, OrderStatus orderStatus, String paymentMethod, int quantity);
+    void findOrderById(Long orderId);
+//    OrderResponseDto
+    void updateOrder(Long id, OrderStatus orderStatus, int quantity);
 
     void deleteOrder(Long orderId);
 

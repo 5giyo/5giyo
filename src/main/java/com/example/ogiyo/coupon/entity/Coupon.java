@@ -1,6 +1,7 @@
 package com.example.ogiyo.coupon.entity;
 
 import com.example.ogiyo.coupon.dto.request.UpdateCouponRequestDto;
+import com.example.ogiyo.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -20,7 +21,7 @@ public class Coupon {
     private String status;
 
     @ManyToOne
-    private User user;
+    private Member member;
 
 
     public Coupon() {

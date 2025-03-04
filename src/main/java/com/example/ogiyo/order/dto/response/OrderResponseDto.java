@@ -18,11 +18,4 @@ public class OrderResponseDto {
     }
 
     //보여줄 값 Id,결제수단,총금액,배달상태, 메뉴이름 정도?
-    public static OrderResponseDto toDto(Order order) {
-        return new OrderResponseDto(
-                order.getOrderId(),
-                order.getPaymentMethod(),
-                order.getTotalPrice(),
-                order.getOrderStatus());
-    }
 }
