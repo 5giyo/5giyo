@@ -1,4 +1,4 @@
-package com.example.ogiyo.global.etc;
+package com.example.ogiyo.common.etc;
 
 public interface JwtProperties {
     String HEADER_STRING = "Authorization";

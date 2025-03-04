@@ -1,4 +1,4 @@
-package com.example.ogiyo.global.dto;
+package com.example.ogiyo.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

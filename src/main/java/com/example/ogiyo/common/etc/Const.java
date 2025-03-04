@@ -1,4 +1,4 @@
-package com.example.ogiyo.global.etc;
+package com.example.ogiyo.common.etc;
 
 public interface Const {
     String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"; // 이메일 인증용

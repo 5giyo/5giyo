@@ -3,9 +3,9 @@ package com.example.ogiyo.domain.member.service;
 import com.example.ogiyo.domain.member.dto.response.ReadMemberResponseDto;
 import com.example.ogiyo.domain.member.entity.Member;
 import com.example.ogiyo.domain.member.repository.MemberRepository;
-import com.example.ogiyo.global.exception.NotFoundUserException;
+import com.example.ogiyo.common.exception.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
-import com.example.ogiyo.global.config.PasswordEncoder;
+import com.example.ogiyo.common.config.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -31,9 +31,9 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
-    }
+    public Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
+
+    public Optional<Member> findById(Long id) { return memberRepository.findById(id); }
 
     public boolean existsByEmail(String email) {
         return memberRepository.existsByEmail(email);

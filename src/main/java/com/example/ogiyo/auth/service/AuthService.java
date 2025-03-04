@@ -4,15 +4,15 @@ import com.example.ogiyo.auth.dto.response.LoginMemberResponseDto;
 import com.example.ogiyo.auth.dto.response.SignUpMemberResponseDto;
 import com.example.ogiyo.domain.member.entity.Member;
 import com.example.ogiyo.domain.member.service.MemberService;
-import com.example.ogiyo.global.exception.DuplicateEmailException;
-import com.example.ogiyo.global.exception.InvalidPasswordOrEmailException;
-import com.example.ogiyo.global.exception.NotFoundUserException;
+import com.example.ogiyo.common.exception.DuplicateEmailException;
+import com.example.ogiyo.common.exception.InvalidPasswordOrEmailException;
+import com.example.ogiyo.common.exception.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.example.ogiyo.global.config.PasswordEncoder;
+import com.example.ogiyo.common.config.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

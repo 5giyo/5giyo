@@ -1,4 +1,4 @@
-package com.example.ogiyo.global.entity;
+package com.example.ogiyo.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

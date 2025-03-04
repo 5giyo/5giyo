@@ -1,4 +1,4 @@
-package com.example.ogiyo.global.util;
+package com.example.ogiyo.common.util;
 
 
 import com.auth0.jwt.JWT;
@@ -8,7 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.example.ogiyo.auth.service.AuthService;
-import com.example.ogiyo.global.etc.JwtProperties;
+import com.example.ogiyo.common.etc.JwtProperties;
 
 import java.security.Key;
 import java.util.Date;

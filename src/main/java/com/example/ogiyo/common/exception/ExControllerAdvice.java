@@ -1,4 +1,4 @@
-package com.example.ogiyo.global.exception;
+package com.example.ogiyo.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

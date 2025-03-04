@@ -1,6 +1,6 @@
 package com.example.ogiyo.auth.dto.request;
 
-import com.example.ogiyo.global.etc.Const;
+import com.example.ogiyo.common.etc.Const;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

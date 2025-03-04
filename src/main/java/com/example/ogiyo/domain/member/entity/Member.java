@@ -1,6 +1,6 @@
 package com.example.ogiyo.domain.member.entity;
 
-import com.example.ogiyo.global.entity.BaseEntity;
+import com.example.ogiyo.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
