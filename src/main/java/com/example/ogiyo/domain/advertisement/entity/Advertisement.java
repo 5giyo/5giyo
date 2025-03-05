@@ -4,10 +4,12 @@ import com.example.ogiyo.domain.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -29,11 +31,15 @@ public class Advertisement {
     @OneToOne
     private Store store;
 
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
+
     public enum Status {
         ADVERTISING, NON_ADVERTISING;
 
         public static Status checkStatus(LocalDateTime startedAt, LocalDateTime endedAt) {
-            if (startedAt.isAfter(LocalDateTime.now()) && endedAt.isBefore(LocalDateTime.now())) {
+            if (startedAt.isBefore(LocalDateTime.now()) && endedAt.isAfter(LocalDateTime.now())) {
                 return ADVERTISING;
             }
             return NON_ADVERTISING;
