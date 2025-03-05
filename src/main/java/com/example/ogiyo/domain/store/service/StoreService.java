@@ -31,6 +31,7 @@ public class StoreService {
         if (storeName == null) {
             return storeRepository.findAll();
         }
+
         return storeRepository.findByStoreNameToDto(storeName);
     }
 
