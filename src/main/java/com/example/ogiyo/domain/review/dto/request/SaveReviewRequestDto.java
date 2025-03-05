@@ -4,11 +4,11 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class SaveReviewRequestDto {
     @NotNull
     private Long orderId;
@@ -19,7 +19,7 @@ public class SaveReviewRequestDto {
     private Byte rating;
 
     @NotBlank(message = "리뷰내용은 비워둘 수 없습니다.")
-    @Size(min = 5, message = "최소 5자 이상 입력해주세요.")
+    @Size(min = 5, max = 255, message = "리뷰는 5~255자로 입력해주세요.")
     private String content;
 
 

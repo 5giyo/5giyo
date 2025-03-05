@@ -1,14 +1,18 @@
 package com.example.ogiyo.domain.review.entity;
 
-import com.example.ogiyo.common.BaseEntity;
+import com.example.ogiyo.common.entity.BaseEntity;
+import com.example.ogiyo.domain.ceoReview.entity.CeoReview;
+import com.example.ogiyo.domain.member.entity.Member;
+import com.example.ogiyo.domain.store.entity.Store;
+import com.example.ogiyo.order.entity.Order;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
-
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "review")
 public class Review extends BaseEntity {
     @Id
@@ -20,20 +24,22 @@ public class Review extends BaseEntity {
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "memberId", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId")
     private Order order;
 
+    @OneToOne(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private CeoReview ceoReview;
+
     @Column(nullable = false)
     private Byte rating;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
+    @Size(min = 5, max = 255)
     private String content;
-
-    public Review() {}
 
     public Review(Store store, Member member, Order order, Byte rating, String content){
         this.store = store;

@@ -1,8 +1,16 @@
 package com.example.ogiyo.domain.review.service;
 
 import com.example.ogiyo.common.dto.ResponseDto;
+import com.example.ogiyo.common.s3.S3Manager;
+import com.example.ogiyo.common.util.JwtUtil;
 import com.example.ogiyo.domain.member.service.MemberService;
+import com.example.ogiyo.domain.photo.domainType.DomainType;
+import com.example.ogiyo.domain.photo.dto.PhotoUrlResponse;
+import com.example.ogiyo.domain.photo.entity.Photo;
+import com.example.ogiyo.domain.photo.service.PhotoService;
+import com.example.ogiyo.domain.review.dto.response.UpdateReviewResponseDto;
 import com.example.ogiyo.domain.store.service.StoreService;
+import com.example.ogiyo.order.entity.OrderStatus;
 import com.example.ogiyo.order.service.OrderService;
 import com.example.ogiyo.domain.review.dto.request.SaveReviewRequestDto;
 import com.example.ogiyo.domain.review.dto.request.UpdateReviewRequestDto;
@@ -11,14 +19,18 @@ import com.example.ogiyo.domain.review.dto.response.PagingReviewResponseDto;
 import com.example.ogiyo.domain.review.dto.response.SaveReviewResponseDto;
 import com.example.ogiyo.domain.review.entity.Review;
 import com.example.ogiyo.domain.review.repository.ReviewRepository;
-import com.example.ogiyo.store.service.StoreService;
+import com.sun.jdi.request.InvalidRequestStateException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,24 +39,61 @@ public class ReviewService {
     private final StoreService storeService;
     private final MemberService memberService;
     private final OrderService orderService;
+    private final PhotoService photoService;
+    private final JwtUtil jwtUtil;
+    private final S3Manager s3Manager;
 
-    public ResponseDto<SaveReviewResponseDto> saveReview(Long storeId, SaveReviewRequestDto reviewRequestDto) {
+    @Transactional
+    public ResponseDto<SaveReviewResponseDto> saveReview(Long storeId, String token, SaveReviewRequestDto reviewRequestDto, List<MultipartFile> photos) {
+        Long memberId = jwtUtil.extractUserId(token);
+
+        Order order = orderService.findOrder(reviewRequestDto.getOrderId());
+        OrderStatus orderStatus = order.getOrderStatus();
+        if(!OrderStatus.DELIVERED.equals(orderStatus)) {
+            throw new InvalidRequestStateException("배달 완료된 주문만 리뷰를 작성할 수 있습니다.");
+        }
+
         Review review = new Review(
                 storeService.getStore(storeId),
-                memberService.findById(1),
+                memberService.findById(memberId),
                 orderService.findOrder(reviewRequestDto.getOrderId()),
                 reviewRequestDto.getRating(),
                 reviewRequestDto.getContent()
         );
         Review savedReview = reviewRepository.save(review);
-        return ResponseDto.success(buildSaveReviewResponseDto(savedReview));
+
+        List<Photo> photoList = new ArrayList<>();
+        List<PhotoUrlResponse> photoUrlResponseList = new ArrayList<>();
+
+        if(photos != null) {
+            int imageSeq = photoService.findMaxSeq(savedReview.getId());
+            for (MultipartFile photo : photos) {
+                String photoKeyName = s3Manager.generateReviewPhotoKeyName();
+                String photourl = s3Manager.uploadFile(photoKeyName, photo);
+
+                Photo photoObj = new Photo(
+                        DomainType.REVIEW,
+                        savedReview.getId(),
+                        ++imageSeq,
+                        photoKeyName,
+                        photourl
+                );
+                photoList.add(photoObj);
+                photoUrlResponseList.add(new PhotoUrlResponse(photourl));
+            }
+        }
+        photoService.saveAll(photoList);
+
+        return ResponseDto.success(buildSaveReviewResponseDto(savedReview, photoUrlResponseList));
     }
 
-    private SaveReviewResponseDto buildSaveReviewResponseDto(Review review) {
+    private SaveReviewResponseDto buildSaveReviewResponseDto(Review review, List<PhotoUrlResponse> photoUrlResponseList) {
         SaveReviewResponseDto response = new SaveReviewResponseDto(
                 review.getMember().getName(),
                 review.getRating(),
-                review.getContent()
+                review.getContent(),
+                photoUrlResponseList,
+                review.getModifiedAt()
         );
         return response;
     }
@@ -54,13 +103,20 @@ public class ReviewService {
         Page<Review> reviewPage = reviewRepository.findAllByStoreIdOrderByModifiedAtDesc(storeId, pageRequest);
 
         List<GetReviewResponseDto> reviews = reviewPage.getContent().stream()
-                .map(review -> new GetReviewResponseDto(
+                .map(review -> {
+                    List<PhotoUrlResponse> photoUrls = photoService.findByDomainTypeAndDomainKey(DomainType.REVIEW, review.getId());
+                    String ceoComment = (review.getCeoReview() != null) ? review.getCeoReview().getContent() : "";
+
+                    return new GetReviewResponseDto(
                         review.getId(),
-                        review.getMember().getId(),
+                        review.getMember().getName,
                         review.getModifiedAt(),
                         review.getRating(),
-                        review.getContent()
-                )).toList();
+                        photoUrls,
+                        review.getContent(),
+                        ceoComment
+                    );
+                }).toList();
 
         PagingReviewResponseDto response = new PagingReviewResponseDto(
                 reviews,
@@ -72,17 +128,43 @@ public class ReviewService {
     }
 
     @Transactional
-    public ResponseDto<SaveReviewResponseDto> updateReview(Long reviewId, UpdateReviewRequestDto requestDto) {
+    public ResponseDto<UpdateReviewResponseDto> updateReview(Long reviewId, String token, UpdateReviewRequestDto requestDto) {
+        Long memberId = jwtUtil.extractUserId(token);
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(()-> new IllegalArgumentException("수정하려는 리뷰를 찾을 수 없습니다."));
+        if(!memberId.equals(review.getMember().getId())) {
+            throw new IllegalArgumentException("리뷰 작성자만 수정할 수 있습니다.");
+        }
+
+        review.updateReview(requestDto.getRating(), requestDto.getContent());
+        UpdateReviewResponseDto response = new UpdateReviewResponseDto(
+                review.getMember().getName(),
+                review.getRating(),
+                review.getContent(),
+                review.getModifiedAt()
+        );
+        return ResponseDto.success(response);
+    }
+
+    @Transactional
+    public ResponseDto<String> deleteReview(Long reviewId, String token) {
+        Long memberId = jwtUtil.extractUserId(token);
+
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new IllegalArgumentException("수정하려는 리뷰를 찾을 수 없습니다."));
 
-        review.updateReview(requestDto.getRating(), requestDto.getContent());
+        if(!memberId.equals(review.getMember().getId())) {
+            throw new IllegalArgumentException("리뷰 작성자만 삭제할 수 있습니다.");
+        }
 
-        return ResponseDto.success(buildSaveReviewResponseDto(review));
-    }
-
-    public ResponseDto<String> deleteReview(Long reviewId) {
+        photoService.deleteByDomainTypeAndDomainKey(DomainType.REVIEW, review.getId());
         reviewRepository.deleteById(reviewId);
         return ResponseDto.success("리뷰를 삭제하였습니다.");
+    }
+
+
+    public Review getReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(()->new EntityNotFoundException("해당하는 리뷰가 존재하지 않습니다."));
     }
 }
