@@ -2,7 +2,6 @@ package com.example.ogiyo.menus.service;
 
 import com.example.ogiyo.menus.dto.MenuRequest;
 import com.example.ogiyo.menus.dto.MenuResponse;
-import com.example.ogiyo.menus.dto.MenuUpdateRequest;
 import com.example.ogiyo.menus.entity.LikeCount;
 import com.example.ogiyo.menus.entity.Menu;
 import com.example.ogiyo.menus.entity.OrderCount;
@@ -92,7 +91,7 @@ public class MenuService {
 
     // 메뉴 수정
     @Transactional
-    public Menu updateMenu(Long menuId, MenuUpdateRequest dto) {
+    public Menu updateMenu(Long menuId, MenuRequest dto) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 메뉴가 존재하지 않습니다. id=" + menuId));
 
