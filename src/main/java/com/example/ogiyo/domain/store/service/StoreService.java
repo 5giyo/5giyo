@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import static com.example.ogiyo.domain.store.entity.Store.Status.*;
 
 import java.util.List;
 
@@ -60,11 +61,11 @@ public class StoreService {
                 .announcement(announcement)
                 .minPrice(minPrice)
                 .imageUrl(imageUrl)
-                .status(Store.Status.OPEN)
+                .status(OPEN)
                 .build();
 
         Store savedStore = storeRepository.save(store);
-        return new CreateStoreResponseDto(savedStore.getStoreId(), savedStore.getStoreName(), Store.Status.OPEN.toString());
+        return new CreateStoreResponseDto(savedStore.getStoreId(), savedStore.getStoreName(), OPEN.toString());
     }
 
     public void updateStore(Long storeId, String storeName, String operatingHours, String announcement, Long minPrice, String imageUrl) {
@@ -83,13 +84,13 @@ public class StoreService {
 
     public void updateStore(Long storeId, String status) {
 
-        if (Store.Status.PERMANENTLY_CLOSED.toString().equals(status)) {
+        if (PERMANENTLY_CLOSED.toString().equals(status)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "폐업 할 수 없습니다.");
         }
 
         Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
 
-        savedStore.changeStatus(Store.Status.valueOf(status));
+        savedStore.changeStatus(valueOf(status));
 
         storeRepository.save(savedStore);
     }
@@ -98,7 +99,7 @@ public class StoreService {
 
         Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
 
-        savedStore.changeStatus(Store.Status.PERMANENTLY_CLOSED);
+        savedStore.changeStatus(PERMANENTLY_CLOSED);
 
         storeRepository.save(savedStore);
     }
