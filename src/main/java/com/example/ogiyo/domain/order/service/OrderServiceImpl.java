@@ -78,7 +78,6 @@ public class OrderServiceImpl implements OrderService {
         return ResponseDto.success("주문이 삭제되었습니다.");
     }
 
-
     //주문 전체 조회하기
     @Override
     @Transactional(readOnly = true)
@@ -120,10 +119,6 @@ public class OrderServiceImpl implements OrderService {
 
         return ResponseDto.success(responseDto);
     }
-
-    //배송완료
-
-
 
     //findOrder entity 반환하는 메서드입니다.
     public Order findOrder(Long orderId) {

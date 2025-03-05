@@ -1,6 +1,5 @@
 package com.example.ogiyo.domain.coupon.dto.request;
 
-import com.example.ogiyo.domain.coupon.entity.CouponType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
