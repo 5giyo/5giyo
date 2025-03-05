@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface SearchRepository extends JpaRepository<Search, Long> {
-    @Query("SELECT s.storeName, s.minPrice, m.menuName FROM Store s JOIN FETCH Menu m ON s.storeId = m.storeId WHERE s.storeName LIKE %:name% OR m.menuName LIKE %:name%")
-    List<Search> findAllByName(@Param("name") String name);
+//    @Query("SELECT s.storeName, s.minPrice, m.menuName FROM Store s JOIN FETCH Menu m ON s.storeId = m.storeId WHERE s.storeName LIKE %:name% OR m.menuName LIKE %:name%")
+//    List<Search> findAllByName(@Param("name") String name);
 }
