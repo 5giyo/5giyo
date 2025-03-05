@@ -6,9 +6,9 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Getter
-@Setter
 public class CartItem implements Serializable {
-    private Long menuId;
+    private final Long menuId;
+    @Setter
     private int quantity;
 
     public CartItem(Long menuId, int quantity) {

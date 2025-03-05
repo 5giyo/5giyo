@@ -1,14 +1,12 @@
-package com.example.ogiyo.order.controller;
+package com.example.ogiyo.domain.order.controller;
 
 import com.example.ogiyo.common.dto.ResponseDto;
 import com.example.ogiyo.common.etc.JwtProperties;
-import com.example.ogiyo.order.dto.request.RequireOrderRequestDto;
-import com.example.ogiyo.order.dto.request.UpdateOrderRequestDto;
-import com.example.ogiyo.order.dto.response.GetOrderResponseDto;
-import com.example.ogiyo.order.dto.response.RequireOrderResponseDto;
-import com.example.ogiyo.order.dto.response.UpdateOrderResponseDto;
-import com.example.ogiyo.order.entity.Order;
-import com.example.ogiyo.order.service.OrderServiceImpl;
+import com.example.ogiyo.domain.order.dto.request.RequireOrderRequestDto;
+import com.example.ogiyo.domain.order.dto.request.UpdateOrderRequestDto;
+import com.example.ogiyo.domain.order.dto.response.UpdateOrderResponseDto;
+import com.example.ogiyo.domain.order.entity.Order;
+import com.example.ogiyo.domain.order.service.OrderServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +21,14 @@ public class OrderController {
 
     private final OrderServiceImpl orderServiceImpl;
 
-    //TODO:주문 요청하기 장바구니 기능과 함께 수정 필요함.
-    @PostMapping
-    public ResponseEntity<ResponseDto<?>> addOrder(
-            @RequestHeader(JwtProperties.HEADER_STRING) String token,
-            @Valid @RequestBody RequireOrderRequestDto requireOrderRequestDto
-    ) {
-        return ResponseEntity.ok(orderServiceImpl.requireOrder(token,requireOrderRequestDto));
-    }
+//    //TODO:주문 요청하기 장바구니 기능과 함께 수정 필요함.
+//    @PostMapping
+//    public ResponseEntity<ResponseDto<?>> addOrder(
+//            @RequestHeader(JwtProperties.HEADER_STRING) String token,
+//            @Valid @RequestBody RequireOrderRequestDto requireOrderRequestDto
+//    ) {
+//        return ResponseEntity.ok(orderServiceImpl.requireOrder(token,requireOrderRequestDto));
+//    }
 
     //주문 거절하기
     @PostMapping("/{orderId}/reject")

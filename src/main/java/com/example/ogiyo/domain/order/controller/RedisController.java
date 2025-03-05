@@ -1,4 +1,4 @@
-package com.example.ogiyo.order.controller;
+package com.example.ogiyo.domain.order.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

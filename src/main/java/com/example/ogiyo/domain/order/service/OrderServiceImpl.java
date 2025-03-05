@@ -1,14 +1,14 @@
-package com.example.ogiyo.order.service;
+package com.example.ogiyo.domain.order.service;
 
 
 import com.example.ogiyo.common.dto.ResponseDto;
 import com.example.ogiyo.common.util.JwtUtil;
 import com.example.ogiyo.domain.cart.service.CartServiceImpl;
-import com.example.ogiyo.order.dto.request.RequireOrderRequestDto;
-import com.example.ogiyo.order.dto.response.*;
-import com.example.ogiyo.order.entity.OrderStatus;
-import com.example.ogiyo.order.entity.Order;
-import com.example.ogiyo.order.repository.OrderRepository;
+import com.example.ogiyo.domain.order.dto.request.RequireOrderRequestDto;
+import com.example.ogiyo.domain.order.dto.response.*;
+import com.example.ogiyo.domain.order.entity.OrderStatus;
+import com.example.ogiyo.domain.order.entity.Order;
+import com.example.ogiyo.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,21 +25,21 @@ public class OrderServiceImpl implements OrderService {
     private final CartServiceImpl cartService;
 
 
-    //TODO: 주문요청하기는 메뉴와 함께 해결해보기. 장바구니도 같이!
-    @Transactional
-    @Override
-    public ResponseDto<RequireOrderResponseDto> requireOrder(String token, RequireOrderRequestDto requireOrderRequestDto) {
-        //주문하는법
-        Long memberId = jwtUtil.extractUserId(token);
-        //유저 검증? 구현하고,
-        //2.주문을 신청하고 저장한다.
-        Order savedOrder = orderRepository.save(newOrder);
+//    //TODO: 주문요청하기는 메뉴와 함께 해결해보기. 장바구니도 같이!
+//    @Transactional
+//    @Override
+//    public ResponseDto<RequireOrderResponseDto> requireOrder(String token, RequireOrderRequestDto requireOrderRequestDto) {
+//        //주문하는법
+//        Long memberId = jwtUtil.extractUserId(token);
+//        //유저 검증? 구현하고,
+//        //2.주문을 신청하고 저장한다.
+//        Order savedOrder = orderRepository.save(newOrder);
+//
+//
+//        return ResponseDto.success(RequireOrderResponseDto.toDto(savedOrder));
+//    }
 
-
-        return ResponseDto.success(RequireOrderResponseDto.toDto(savedOrder));
-    }
-
-    //TODO:주문 수락하기
+    //주문 수락하기
     @Transactional
     @Override
     public ResponseDto<AcceptOrderResponseDto> acceptOrder(Long orderId) {
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         return ResponseDto.success(acceptOrder);
     }
 
-    //TODO:주문 거절하기
+    //주문 거절하기
     @Override
     public ResponseDto<RejectOrderResponseDto> rejectOrder(Long orderId) {
         Order order = orderRepository
@@ -77,7 +77,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(orderId);
         return ResponseDto.success("주문이 삭제되었습니다.");
     }
-
 
 
     //주문 전체 조회하기
@@ -111,15 +110,18 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(()->new IllegalArgumentException("수정할 주문을 찾을 수 없습니다."));
 
-        Order updateOrder =
-                order.update(
-                orderStatus,
-                paymentMethod
+        order.update(orderStatus, paymentMethod);
+
+        UpdateOrderResponseDto responseDto = new UpdateOrderResponseDto(
+                order.getOrderId(),
+                order.getOrderStatus(),
+                order.getPaymentMethod()
         );
 
-
-        return ResponseDto.success()
+        return ResponseDto.success(responseDto);
     }
+
+    //배송완료
 
 
 

@@ -3,36 +3,47 @@ package com.example.ogiyo.domain.cart.entity;
 
 import jakarta.persistence.Id;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
-@Setter
 @RedisHash("cart")
 public class Cart implements Serializable {
 
     @Id
-    private Long memberId;
-    private List<CartItem> items;
+    private final Long memberId;
+    private final Map<Long, CartItem> items;
 
-    public Cart() {
-        this.items = new ArrayList<>();
+    public Cart(Long memberId) {
+        this.memberId = memberId;
+        this.items = new HashMap<>();
     }
 
-    public void addItem(Long menuId, int quantity) {
-        CartItem existingItem = items.stream()
-                .filter(cartItem->cartItem.getMenuId().equals(menuId))
-                .findFirst()
-                .orElse(null);
+    public void addItem(CartItem item) {
+        items.put(item.getMenuId(), item);
+    }
 
-        if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + quantity);
-        } else {
-            items.add(new CartItem(menuId, quantity));
+    public void removeItem(Long menuId) {
+        items.remove(menuId);
+    }
+
+
+    public int getTotalQuantity() {
+        return items.values().stream().mapToInt(CartItem::getQuantity).sum();
+    }
+
+    public void updateItemQuantity(Long menuId, int quantity) {
+        CartItem item = items.get(menuId);
+        if (item != null) {
+            if (quantity > 0) {
+                item.setQuantity(quantity);
+            } else {
+                // 수량이 0 이하면 아이템 제거
+                items.remove(menuId);
+            }
         }
     }
 }

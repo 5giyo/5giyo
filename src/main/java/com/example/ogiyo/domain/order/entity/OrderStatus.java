@@ -1,4 +1,4 @@
-package com.example.ogiyo.order.entity;
+package com.example.ogiyo.domain.order.entity;
 
 public enum OrderStatus {
     REQUIRED,

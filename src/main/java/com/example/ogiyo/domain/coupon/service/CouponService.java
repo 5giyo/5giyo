@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CouponService {
 
-    ResponseDto<CreateCouponResponseDto> createCoupon(String token, CreateCouponRequestDto createCouponRequestDto);
+    ResponseDto<CreateCouponResponseDto> createCoupon(CreateCouponRequestDto createCouponRequestDto);
 
     ResponseDto<List<GetCouponResponseDto>> findAllCoupons(Long userId);
 

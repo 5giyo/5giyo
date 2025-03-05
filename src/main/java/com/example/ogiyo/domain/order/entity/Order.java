@@ -1,4 +1,4 @@
-package com.example.ogiyo.order.entity;
+package com.example.ogiyo.domain.order.entity;
 
 import com.example.ogiyo.common.entity.BaseEntity;
 import com.example.ogiyo.domain.member.entity.Member;

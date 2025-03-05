@@ -11,9 +11,7 @@ import jakarta.validation.Valid;
 
 public interface CartService {
 
-    ResponseDto<AddCartResponseDto> addCart(String token,
-                                            AddCartRequestDto addCartRequestDto);
-
+    ResponseDto<AddCartResponseDto> addCart(String token,AddCartRequestDto addCartRequestDto);
 
     ResponseDto<UpdateCartResponseDto> updateCart
             (String token,
@@ -21,5 +19,7 @@ public interface CartService {
 
 
 
-    ResponseDto<GetCartResponseDto> getCart(long cartId);
+    ResponseDto<GetCartResponseDto> getCart(Long cartId);
+
+    ResponseDto<String> deleteCard(Long cartId);
 }

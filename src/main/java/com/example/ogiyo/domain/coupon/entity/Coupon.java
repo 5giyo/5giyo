@@ -13,7 +13,6 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String couponCode;
-
     private int discountRate;
     private int discountAmount;
     private int maxDiscountPrice;
@@ -21,17 +20,26 @@ public class Coupon {
     private String status;
 
     @Enumerated(EnumType.STRING)
-    private String couponType;
-
+    private CouponType couponType;
 
 
     @ManyToOne
     private Member member;
 
 
+    public Coupon(String couponCode, CouponType couponType, String status, int discountRate, int maxDiscountPrice, int discountAmount) {
+        this.couponCode = couponCode;
+        this.discountRate = discountRate;
+        this.discountAmount = discountAmount;
+        this.maxDiscountPrice = maxDiscountPrice;
+        this.status = status;
+        this.couponType = couponType;
+    }
+
     public Coupon() {
 
     }
+
 
     public void update(UpdateCouponRequestDto dto) {
         this.discountAmount = discountAmount;

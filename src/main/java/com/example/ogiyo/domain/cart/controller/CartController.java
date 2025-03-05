@@ -37,5 +37,11 @@ public class CartController {
 
     //TODO:장바구니 조회
 
+
     //TODO:장바구니 삭제
+    @DeleteMapping("/{cartId}")
+    public ResponseEntity<ResponseDto<?>> deleteCart(@PathVariable Long cartId) {
+
+        return ResponseEntity.ok(cartServiceImpl.deleteCard(cartId));
+    }
 }
