@@ -1,6 +1,7 @@
 package com.example.ogiyo.menus.entity;
 
 
+import com.example.ogiyo.domain.store.entity.Store;
 import com.example.ogiyo.menus.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;

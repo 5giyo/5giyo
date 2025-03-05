@@ -32,5 +32,4 @@ public class MenuResponse {
         this.option = menu.getOption();
         this.modifiedAt = menu.getModifiedAt();
     }
-
 }

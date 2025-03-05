@@ -1,5 +1,6 @@
 package com.example.ogiyo.menus.service;
 
+import com.example.ogiyo.domain.store.entity.Store;
 import com.example.ogiyo.menus.dto.MenuRequest;
 import com.example.ogiyo.menus.dto.MenuResponse;
 import com.example.ogiyo.menus.entity.LikeCount;
@@ -84,7 +85,7 @@ public class MenuService {
     public List<MenuResponse> getMenusByStore(Long storeId) {
         List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
         return menus.stream()
-                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getName(), menu.getCategory(),
+                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
                         menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount()))
                 .collect(Collectors.toList());
     }
