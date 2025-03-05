@@ -89,6 +89,7 @@ public class MenuService {
                         menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount()))
                 .collect(Collectors.toList());
     }
+    // 메뉴 엔티티 전체 반환
 
     // 메뉴 수정
     @Transactional
