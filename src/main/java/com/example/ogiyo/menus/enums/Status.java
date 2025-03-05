@@ -1,4 +1,6 @@
 package com.example.ogiyo.menus.enums;
 
-public class status {
+public enum Status {
+    AVAILABLE,
+    UNAVAILABLE
 }

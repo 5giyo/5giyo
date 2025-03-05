@@ -1,51 +1,85 @@
 package com.example.ogiyo.menus.entity;
 
 
+import com.example.ogiyo.menus.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.DoubleSummaryStatistics;
 
 @Entity
-@Table(name = "menus")
-@Getter @Setter
+@Table(name = "menu")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long menuId;  // PK
+    private Long menuId;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
-    private Store store;  // FK
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "storeId", nullable = false)
+//    private Store store;
 
-    @Column(nullable = false)
-    private String category; // 카테고리 (한식, 양식 등)
+    private String category;
+    private String menuName;
+    private Integer price;
 
-    @Column(nullable = false)
-    private String menuName; // 메뉴명
-
-    @Column(nullable = false)
-    private int price; // 가격
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now(); // 생성 날짜
-
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt = LocalDateTime.now(); // 수정 날짜
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status; // 상태 (판매중, 품절 등)
+    private Status status;
 
-    @Column(nullable = false)
-    private int searchCount = 0; // 검색 횟수
+    private Integer searchCount;
 
-    @PreUpdate
-    public void updateTimestamp() {
-        this.modifiedAt = LocalDateTime.now();
+    private String option; // 현재는 단순 문자열 (추후 변경 가능)
+
+//    public DoubleSummaryStatistics getSearchCountEntity() {
+//        return
+//    }
+    // 오더 카운트
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderCountId", referencedColumnName = "orderCountId")
+    private OrderCount orderCount;
+    // 좋아요(찜) 카운트
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "likeCountId", referencedColumnName = "likeCountId")
+    private LikeCount likeCount;
+
+    // LikeCount 메서드는 LikeCount가 null일 경우 0을 반환해서 NPE방지
+    public Integer getLikeCount() {
+        return likeCount != null ? likeCount.getCount() : 0;
+    }
+    
+    //  검색횟우 카운트
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "searchCountId", referencedColumnName = "searchCountId")
+    private SearchCount searchCountEntity;
+
+
+    public void setCategory(String category) {
+
+    }
+
+    public void setMenuName(String menuName) {
+    }
+
+    public void setPrice(Integer price) {
+    }
+
+    public void setStatus(Status status) {
+    }
+
+    public void setOption(String option) {
+    }
+
+    public void setModifiedAt(LocalDateTime now) {
     }
 }
+
 
 
