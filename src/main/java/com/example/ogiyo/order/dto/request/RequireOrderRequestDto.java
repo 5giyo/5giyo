@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UpdateOrderRequestDto {
-    private OrderStatus status;
+public class RequireOrderRequestDto {
+    private String token;
+    private OrderStatus orderStatus;
     private String paymentMethod;
 
 }

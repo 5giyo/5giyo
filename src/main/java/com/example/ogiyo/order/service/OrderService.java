@@ -1,8 +1,9 @@
 package com.example.ogiyo.order.service;
 
-import com.example.ogiyo.order.dto.request.AddCartRequestDto;
-import com.example.ogiyo.order.dto.request.AddOrderRequestDto;
-import com.example.ogiyo.order.dto.response.OrderResponseDto;
+import com.example.ogiyo.common.dto.ResponseDto;
+import com.example.ogiyo.order.dto.response.*;
+import com.example.ogiyo.order.dto.request.RequireOrderRequestDto;
+import com.example.ogiyo.order.entity.Order;
 import com.example.ogiyo.order.entity.OrderStatus;
 
 import java.util.List;
@@ -10,20 +11,24 @@ import java.util.List;
 
 public interface OrderService {
 
-    void  addOrder(Long userId, Long menuId, AddOrderRequestDto addOrderRequestDto);
-//    OrderResponseDto
-//    List<OrderResponseDto> findAllOrders(Long userId);
+    //주문요청하기
+    ResponseDto<RequireOrderResponseDto> requireOrder(String token, RequireOrderRequestDto requireOrderRequestDto);
 
-    void findOrderById(Long orderId);
-//    OrderResponseDto
-    void updateOrder(Long id, OrderStatus orderStatus, int quantity);
+    //주문수락하기
+    ResponseDto<AcceptOrderResponseDto> acceptOrder(Long orderId);
 
-    void deleteOrder(Long orderId);
+    //주문 거절하기
+    ResponseDto<RejectOrderResponseDto> rejectOrder(Long orderId);
 
-    void addCart(Long userId, Long menuId, int quantity);
 
-    void removeCart(Long userId, Long menuId);
+    //주문전체조회 고민해보기.
+    ResponseDto<List<Order>> findAllOrders();
 
-    int calculateTotal(Long userId);
+
+    ResponseDto<GetOrderResponseDto> findOrderById(Long orderId);
+
+    ResponseDto<UpdateOrderResponseDto> updateOrder(Long orderId, OrderStatus orderStatus, String paymentMethod);
+
+    ResponseDto<String> deleteOrder(Long orderId);
 
 }

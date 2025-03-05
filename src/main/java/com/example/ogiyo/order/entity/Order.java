@@ -2,7 +2,6 @@ package com.example.ogiyo.order.entity;
 
 import com.example.ogiyo.common.entity.BaseEntity;
 import com.example.ogiyo.domain.member.entity.Member;
-import com.example.ogiyo.order.dto.request.UpdateOrderRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -13,7 +12,7 @@ public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderId;
-    private int quantity;
+    private String paymentMethod;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; //주문상태
@@ -34,10 +33,8 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
     }
 
-    public void update(OrderStatus orderStatus,int quantity) {
+    public void update(OrderStatus orderStatus,String paymentMethod) {
         this.orderStatus = orderStatus;
-        this.quantity = quantity;
-
-
+        this.paymentMethod = paymentMethod;
     }
 }

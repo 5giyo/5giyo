@@ -1,6 +1,6 @@
-package com.example.ogiyo.coupon.entity;
+package com.example.ogiyo.domain.coupon.entity;
 
-import com.example.ogiyo.coupon.dto.request.UpdateCouponRequestDto;
+import com.example.ogiyo.domain.coupon.dto.request.UpdateCouponRequestDto;
 import com.example.ogiyo.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,12 +13,17 @@ public class Coupon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String couponCode;
-    private String couponType;
-    private int discountPrice;
+
+    private int discountRate;
     private int discountAmount;
     private int maxDiscountPrice;
-    private int minDiscountPrice;
+    private int minDeliveryPrice;
     private String status;
+
+    @Enumerated(EnumType.STRING)
+    private String couponType;
+
+
 
     @ManyToOne
     private Member member;
@@ -31,7 +36,7 @@ public class Coupon {
     public void update(UpdateCouponRequestDto dto) {
         this.discountAmount = discountAmount;
         this.maxDiscountPrice = maxDiscountPrice;
-        this.minDiscountPrice = minDiscountPrice;
+        this.minDeliveryPrice = minDeliveryPrice;
         this.couponType = couponType;
 
     }

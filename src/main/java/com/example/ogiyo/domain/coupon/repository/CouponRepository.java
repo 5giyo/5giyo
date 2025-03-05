@@ -1,6 +1,6 @@
-package com.example.ogiyo.coupon.repository;
+package com.example.ogiyo.domain.coupon.repository;
 
-import com.example.ogiyo.coupon.entity.Coupon;
+import com.example.ogiyo.domain.coupon.entity.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
