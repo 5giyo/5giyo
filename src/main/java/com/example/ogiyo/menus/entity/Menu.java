@@ -1,51 +1,88 @@
 package com.example.ogiyo.menus.entity;
 
 
+import com.example.ogiyo.menus.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.Properties;
 
 @Entity
-@Table(name = "menus")
-@Getter @Setter
-@NoArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long menuId;  // PK
+    private Long menuId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
-    private Store store;  // FK
+    private Store store;
 
     @Column(nullable = false)
-    private String category; // 카테고리 (한식, 양식 등)
+    private String category;
 
     @Column(nullable = false)
-    private String menuName; // 메뉴명
+    private String menuName;
 
     @Column(nullable = false)
-    private int price; // 가격
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now(); // 생성 날짜
-
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt = LocalDateTime.now(); // 수정 날짜
+    private Integer price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status; // 상태 (판매중, 품절 등)
+    private Status status;
+
+    private String option; // 추후 확장 가능
+
+    @OneToOne
+    @JoinColumn(name = "order_count_id")
+    private OrderCount orderCount;
+
+    @OneToOne
+    @JoinColumn(name = "like_count_id")
+    private LikeCount likeCount;
+
+    @OneToOne
+    @JoinColumn(name = "search_count_id")
+    private SearchCount searchCount;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private int searchCount = 0; // 검색 횟수
+    private LocalDateTime modifiedAt;
 
-    @PreUpdate
-    public void updateTimestamp() {
+    // 생성 메서드
+    public static Menu createMenu(Store store, String category, String menuName, Integer price, Status status,
+                                  String option, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
+        return Menu.builder()
+                .store(store)
+                .category(category)
+                .menuName(menuName)
+                .price(price)
+                .status(status)
+                .option(option)
+                .orderCount(orderCount)
+                .likeCount(likeCount)
+                .searchCount(searchCount)
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .build();
+    }
+
+    // 비즈니스 로직
+    public void updateMenu(String category, String menuName, Integer price, Status status, String option) {
+        this.category = category;
+        this.menuName = menuName;
+        this.price = price;
+        this.status = status;
+        this.option = option;
         this.modifiedAt = LocalDateTime.now();
     }
 }
+
 
 
