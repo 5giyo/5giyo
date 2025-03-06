@@ -2,6 +2,7 @@ package com.example.ogiyo.auth.service;
 
 import com.example.ogiyo.auth.dto.response.LoginMemberResponseDto;
 import com.example.ogiyo.auth.dto.response.SignUpMemberResponseDto;
+import com.example.ogiyo.auth.enums.MemberRole;
 import com.example.ogiyo.domain.member.entity.Member;
 import com.example.ogiyo.domain.member.service.MemberService;
 import com.example.ogiyo.common.exception.DuplicateEmailException;
@@ -16,16 +17,13 @@ import com.example.ogiyo.common.config.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Transactional
-    public SignUpMemberResponseDto signUp(String email, String password) {
+    public SignUpMemberResponseDto signUp(String email, String password, MemberRole role) {
         if(memberService.existsByEmail(email)){
             throw new DuplicateEmailException();
         }
@@ -35,6 +33,7 @@ public class AuthService {
         Member member = Member.builder()
                 .email(email)
                 .password(encodedPassword)
+                .role(role)
                 .build();
 
         Member savedMember = memberService.saveMember(member);
@@ -43,6 +42,7 @@ public class AuthService {
                 .id(savedMember.getId())
                 .email(savedMember.getEmail())
                 .createdAt(savedMember.getCreatedAt())
+                .role(role)
                 .build();
     }
 
@@ -57,6 +57,7 @@ public class AuthService {
         return LoginMemberResponseDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
+                .role(member.getRole())
                 .build();
     }
 }

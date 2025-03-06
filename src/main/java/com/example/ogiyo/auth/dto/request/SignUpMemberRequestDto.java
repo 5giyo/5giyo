@@ -1,5 +1,6 @@
 package com.example.ogiyo.auth.dto.request;
 
+import com.example.ogiyo.auth.enums.MemberRole;
 import com.example.ogiyo.common.etc.Const;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -22,4 +23,7 @@ public class SignUpMemberRequestDto {
     @Pattern(regexp = Const.PASSWORD_REGEX)
     @Size(min = 8, max = 20)
     private final String password;
+
+    @NotNull
+    private final MemberRole role;
 }

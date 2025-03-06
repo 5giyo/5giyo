@@ -1,5 +1,6 @@
 package com.example.ogiyo.domain.search.controller;
 
+import com.example.ogiyo.common.dto.ResponseDto;
 import com.example.ogiyo.domain.search.service.SearchService;
 import com.example.ogiyo.domain.search.dto.SearchResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +23,5 @@ public class SearchController {
     public ResponseEntity<List<SearchResponseDto>> search(@RequestParam String name) {
         return ResponseEntity.ok(searchService.findAllByName(name));
     }
+    
 }

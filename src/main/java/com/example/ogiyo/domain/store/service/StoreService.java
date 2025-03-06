@@ -103,4 +103,8 @@ public class StoreService {
 
         storeRepository.save(savedStore);
     }
+
+    public Store getStore(Long storeId) {
+        return storeRepository.findByIdOrElseThrow(storeId);
+    }
 }
