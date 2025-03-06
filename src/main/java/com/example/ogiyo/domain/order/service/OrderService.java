@@ -20,6 +20,9 @@ public interface OrderService {
     //주문 거절하기
     ResponseDto<RejectOrderResponseDto> rejectOrder(Long orderId);
 
+
+    ResponseDto<CompleteOrderResponseDto> completeOrder(Long orderId);
+
     //주문 전체 조회
     ResponseDto<List<Order>> findAllOrders();
 

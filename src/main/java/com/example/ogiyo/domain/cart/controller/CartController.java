@@ -30,9 +30,10 @@ public class CartController {
     @PatchMapping("/{cartId}")
     public ResponseEntity<ResponseDto<?>> updateCart(
             @RequestHeader(JwtProperties.HEADER_STRING) String token,
+            @PathVariable Long cartId,
             @Valid @RequestBody UpdateCartRequestDto updateCartRequestDto
     ) {
-        return ResponseEntity.ok(cartServiceImpl.updateCart(token,updateCartRequestDto));
+        return ResponseEntity.ok(cartServiceImpl.updateCart(token,cartId,updateCartRequestDto));
     }
 
     //장바구니 조회
