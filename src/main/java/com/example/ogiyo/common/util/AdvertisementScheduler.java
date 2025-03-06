@@ -34,9 +34,9 @@ public class AdvertisementScheduler {
     private final AdvertisementService advertisementService;
 
     // 테스트용
-    //@Scheduled(fixedRate = 5000)
-    // 매일 새벽 3시 스케줄링
-    @Scheduled(cron = "0 0 3 * * ?")
+    // @Scheduled(fixedRate = 10000)
+    // 매일 새벽 6시 스케줄링
+    @Scheduled(cron = "0 0 6 * * ?")
     @Transactional
     public void runTask() {
         log.info("Scheduler Start: {}", LocalDateTime.now());

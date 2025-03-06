@@ -17,9 +17,9 @@ public class AdvertisementService {
     private final StoreService storeService;
     private final AdvertisementRepository advertisementRepository;
 
-    public void saveAdvertisement(Long storeId, LocalDateTime startedAt, LocalDateTime endedAt) {
+    public void saveAdvertisement(Long ownerId, Long storeId, LocalDateTime startedAt, LocalDateTime endedAt) {
 
-        Store savedStore = storeService.findByStoreWithUserInfo(storeId);
+        Store savedStore = storeService.findByStoreWithOwnerId(ownerId, storeId);
 
         Advertisement advertisement = Advertisement.builder()
                 .startedAt(startedAt)
@@ -31,6 +31,19 @@ public class AdvertisementService {
         advertisementRepository.save(advertisement);
     }
 
+    public void updateAdvertisement(Long advertisementId, LocalDateTime startedAt, LocalDateTime endedAt) {
+        Advertisement savedAdvertisement = advertisementRepository.findByAdvertisementIdOrElseThrow(advertisementId);
+
+        savedAdvertisement.updateAdvertisement(
+                startedAt,
+                endedAt,
+                checkStatus(startedAt, endedAt)
+        );
+
+        advertisementRepository.save(savedAdvertisement);
+    }
+
+    // 테스트용
     public List<Advertisement> findAllAdvertisements() {
         return advertisementRepository.findAll();
     }
