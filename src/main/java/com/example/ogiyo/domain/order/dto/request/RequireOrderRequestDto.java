@@ -10,5 +10,6 @@ public class RequireOrderRequestDto {
     private String token;
     private OrderStatus orderStatus;
     private String paymentMethod;
+    private String couponCode;
 
 }
