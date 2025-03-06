@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "menu")
 public class Menu {
 
     @Id
@@ -80,6 +81,11 @@ public class Menu {
         this.price = price;
         this.status = status;
         this.option = option;
+        this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void setStatus(Status newStatus) {
+        this.status = newStatus;
         this.modifiedAt = LocalDateTime.now();
     }
 }
