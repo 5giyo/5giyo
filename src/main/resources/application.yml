@@ -38,3 +38,17 @@ jwt:
     key: ${JWT_KEY}
 
 
+
+cloud:
+  aws:
+    region:
+      static: us-east-2
+    s3:
+      bucket: ogiyo-bucket
+      path:
+        review: "review/"
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+    stack:
+      auto: false
