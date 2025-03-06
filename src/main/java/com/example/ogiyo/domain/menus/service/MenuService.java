@@ -39,7 +39,7 @@ public class MenuService {
 
     // 메뉴 추가
     @Transactional
-    public Menu createMenu(Long storeId, String category, String menuName, Integer price, String option, Status status) {
+    public Menu createMenu(Long storeId, String category, String menuName, Integer price, String menuOption, Status status) {
         // 사장님 권한
         // 현재 로그인한 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,7 +63,7 @@ public class MenuService {
                 .menuName(menuName)
                 .price(price)
                 .status(status)
-                .option(option)
+                .menuOption(menuOption)
                 .orderCount(orderCount)
                 .likeCount(likeCount)
                 .searchCount(searchCount)

@@ -36,7 +36,7 @@ public class Menu {
     @Column(nullable = false)
     private Status status;
 
-    private String option; // 추후 확장 가능
+    private String menuOption; // 추후 확장 가능
 
     @OneToOne
     @JoinColumn(name = "order_count_id")
@@ -65,7 +65,7 @@ public class Menu {
                 .menuName(menuName)
                 .price(price)
                 .status(status)
-                .option(option)
+                .menuOption(option)
                 .orderCount(orderCount)
                 .likeCount(likeCount)
                 .searchCount(searchCount)
@@ -80,7 +80,7 @@ public class Menu {
         this.menuName = menuName;
         this.price = price;
         this.status = status;
-        this.option = option;
+        this.menuOption = menuOption;
         this.modifiedAt = LocalDateTime.now();
     }
 
