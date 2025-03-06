@@ -1,5 +1,7 @@
 package com.example.ogiyo.domain.menus.service;
-
+import com.example.ogiyo.common.util.JwtUtil;
+import com.example.ogiyo.domain.menus.dto.CreateMenuResponseDto;
+import com.example.ogiyo.domain.menus.dto.MenuResponse;
 import com.example.ogiyo.domain.store.entity.Store;
 import com.example.ogiyo.domain.menus.dto.MenuRequest;
 import com.example.ogiyo.domain.menus.entity.LikeCount;
@@ -11,24 +13,34 @@ import com.example.ogiyo.domain.menus.repository.LikeCountRepository;
 import com.example.ogiyo.domain.menus.repository.MenuRepository;
 import com.example.ogiyo.domain.menus.repository.OrderCountRepository;
 import com.example.ogiyo.domain.menus.repository.SearchCountRepository;
+import com.example.ogiyo.domain.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+import com.example.ogiyo.domain.store.service.StoreService;
 
 @Service
 @RequiredArgsConstructor
 public class MenuService {
-
+    private final JwtUtil jwtUtil;
     private final MenuRepository menuRepository;
     private final OrderCountRepository orderCountRepository;
     private final LikeCountRepository likeCountRepository;
     private final SearchCountRepository searchCountRepository;
+    private final StoreRepository storeRepository;
+    private final StoreService storeService;
 
     // 메뉴 추가
     @Transactional
-    public Menu createMenu(Long storeId, String category, String menuName, Integer price, String option, Status status) {
+    public CreateMenuResponseDto createMenu(String token,Long storeId, String category, String menuName, Integer price, String menuOption, Status status) {
+        // 사장님 권한
+        // 현재 로그인한 사용자 정보 가져오기
+        Long ownerId = jwtUtil.extractMemberId(token);
+        Store store = storeService.findByStoreWithOwnerId(ownerId, storeId);
+        // 권한 체크 이후 메뉴 생성
         OrderCount orderCount = orderCountRepository.save(new OrderCount());
         LikeCount likeCount = likeCountRepository.save(new LikeCount());
         SearchCount searchCount = searchCountRepository.save(new SearchCount());
@@ -39,7 +51,7 @@ public class MenuService {
                 .menuName(menuName)
                 .price(price)
                 .status(status)
-                .option(option)
+                .menuOption(menuOption)
                 .orderCount(orderCount)
                 .likeCount(likeCount)
                 .searchCount(searchCount)
@@ -47,10 +59,22 @@ public class MenuService {
                 .modifiedAt(LocalDateTime.now())
                 .build();
 
-        return menuRepository.save(menu);
+        Menu savedMenu = menuRepository.save(menu);
+
+        return CreateMenuResponseDto.builder()
+                .menuId(savedMenu.getId())
+                .storeId(savedMenu.getStore().getId())
+                .category(savedMenu.getCategory())
+                .menuName(savedMenu.getMenuName())
+                .price(savedMenu.getPrice())
+                .menuOption(savedMenu.getMenuOption())
+                .status(savedMenu.getStatus())
+                .createdAt(savedMenu.getCreatedAt())
+                .modifiedAt(savedMenu.getModifiedAt())
+                .build();
     }
 
-    // 특정 메뉴 조회
+    // 메뉴 ID로만 메뉴 조회
     public Menu getMenu(Long menuId) {
         return menuRepository.findById(menuId)
                 .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
@@ -78,16 +102,33 @@ public class MenuService {
         menu.getSearchCount().increaseSearchCount();
     }
 
-//    // 가게별 메뉴 조회
-//    public List<MenuResponse> getMenusByStore(Long storeId) {
-//        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
-//        return menus.stream()
-//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.findStore().getStoreName(), menu.getCategory(),
-//                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount().getSearchCount())
-//                .collect(Collectors.toList());
-//    }
-    // 메뉴 엔티티 전체 반환
+    // 메뉴 조회(단독 조회 불가 가게 조회시 함께 조회) + 필터링 카테고리 추가
+    public List<MenuResponse> getMenusByStore(Long storeId, String category) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()-> new RuntimeException("가게를 찾을수 없습니다."));
+        // 메뉴를 검색 조건에 맞춰 필터링
+        List<Menu> menus = menuRepository.findByStoreIdAndCategory(storeId,category);
+        return menus.stream()
+                .map(MenuResponse::new)
+                .collect(Collectors.toList());
+    }
 
+    // 메뉴 조회(삭제된 메뉴 제외)
+    public List<MenuResponse> getMenusByHistory(Long storeId) {
+        List<Menu> menus = menuRepository.findByStoreIdAndStatusNot(storeId, Status.DELETED);
+        return menus.stream()
+                .map(MenuResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    // 메뉴 엔티티 전체 반환(팀원 요청)
+    @Transactional
+    public List<MenuResponse> getMenuEntity() {
+        List<Menu> menus = menuRepository.findAll();
+        return menus.stream()
+                .map(MenuResponse::new)
+                .collect(Collectors.toList());
+    }
     // 메뉴 수정
     @Transactional
     public Menu updateMenu(Long menuId, MenuRequest dto) {
@@ -99,34 +140,23 @@ public class MenuService {
                 dto.getMenuName(),
                 dto.getPrice(),
                 dto.getStatus(),
-                dto.getOption()
+                dto.getMenuOption()
         );
-
         return menu;
     }
 
-    // 메뉴 삭제
-    public void deleteMenu(Long menuId) {
-        if (!menuRepository.existsById(menuId)) {
-            throw new RuntimeException("메뉴를 찾을 수 없습니다.");
+    // 메뉴 삭제(본인가게만, 삭제시 메뉴 상태만 삭제상태로 변경)
+    // 가게 메뉴 조회 시 삭제된 메뉴 나타나지 않음, 주문 내역 조회시에는 삭제된 메뉴 정보 나타남
+    public void deleteMenu(Long menuId, Long ownerId) {
+        Menu menu = menuRepository.findWithStoreAndOwnerById(menuId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 메뉴 존재하지 않습니다."));
+
+        if(menu.getStore().getOwner().getId().equals(ownerId)) {
+            throw new SecurityException("해당 메뉴를 삭제할 권한이 없습니다.");
         }
-        menuRepository.deleteById(menuId);
+
+        menu.setStatus(Status.DELETED);
     }
 
-
-
-//    // 메뉴 검색 (이름 기준)
-//    public List<MenuResponse> searchMenus(String keyword) {
-//        List<Menu> menus = menuRepository.findByMenuNameContainingIgnoreCase(keyword);
-//        menus.forEach(menu -> {
-//            menu.setSearchCount(menu.getSearchCount() + 1);
-//            menuRepository.save(menu);
-//        });
-//
-//        return menus.stream()
-//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.findStore().getName(), menu.getCategory(),
-//                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount()))
-//                .collect(Collectors.toList());
-//    }
 }
 

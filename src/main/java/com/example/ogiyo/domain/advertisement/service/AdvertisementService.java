@@ -6,9 +6,11 @@ import com.example.ogiyo.domain.store.entity.Store;
 import com.example.ogiyo.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import static com.example.ogiyo.domain.advertisement.entity.Advertisement.Status.*;
+import static com.example.ogiyo.domain.advertisement.entity.Advertisement.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -17,27 +19,32 @@ public class AdvertisementService {
     private final StoreService storeService;
     private final AdvertisementRepository advertisementRepository;
 
-    public void saveAdvertisement(Long ownerId, Long storeId, LocalDateTime startedAt, LocalDateTime endedAt) {
+    public void saveAdvertisement(Long ownerId, Long storeId, LocalDate startedAt, LocalDate endedAt) {
 
         Store savedStore = storeService.findByStoreWithOwnerId(ownerId, storeId);
 
+        LocalDateTime started = LocalDateTime.of(startedAt, LocalTime.of(6, 0));
+        LocalDateTime ended = LocalDateTime.of(endedAt, LocalTime.of(5, 59));
         Advertisement advertisement = Advertisement.builder()
-                .startedAt(startedAt)
-                .endedAt(endedAt)
-                .status(checkStatus(startedAt, endedAt))
+                .startedAt(started)
+                .endedAt(ended)
+                .status(Status.checkStatus(started, ended))
                 .store(savedStore)
                 .build();
 
         advertisementRepository.save(advertisement);
     }
 
-    public void updateAdvertisement(Long advertisementId, LocalDateTime startedAt, LocalDateTime endedAt) {
+    public void updateAdvertisement(Long advertisementId, LocalDate startedAt, LocalDate endedAt) {
         Advertisement savedAdvertisement = advertisementRepository.findByAdvertisementIdOrElseThrow(advertisementId);
 
+        LocalDateTime started = LocalDateTime.of(startedAt, LocalTime.of(6, 0));
+        LocalDateTime ended = LocalDateTime.of(endedAt, LocalTime.of(5, 59));
+
         savedAdvertisement.updateAdvertisement(
-                startedAt,
-                endedAt,
-                checkStatus(startedAt, endedAt)
+                started,
+                ended,
+                Status.checkStatus(started, ended)
         );
 
         advertisementRepository.save(savedAdvertisement);

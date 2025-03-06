@@ -1,10 +1,11 @@
 package com.example.ogiyo.domain.menus.controller;
-
+import com.example.ogiyo.domain.menus.dto.CreateMenuResponseDto;
 import com.example.ogiyo.domain.menus.dto.MenuRequest;
 import com.example.ogiyo.domain.menus.dto.MenuResponse;
 import com.example.ogiyo.domain.menus.entity.Menu;
 import com.example.ogiyo.domain.menus.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -18,16 +19,37 @@ public class MenuController {
 
     // 메뉴 생성
     @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody MenuRequest request) {
-        Menu menu = menuService.createMenu(request.getStoreId(), request.getCategory(), request.getMenuName(),
-                request.getPrice(), request.getOption(), request.getStatus());
-        return ResponseEntity.ok(menu);
+    public ResponseEntity<CreateMenuResponseDto> createMenu(@RequestHeader("Authorization") String token, @RequestBody MenuRequest request) {
+        CreateMenuResponseDto responseDto = menuService.createMenu(
+                token,
+                request.getStoreId(),
+                request.getCategory(),
+                request.getMenuName(),
+                request.getPrice(),
+                request.getMenuOption(),
+                request.getStatus()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 
-    // 메뉴 검색
-    @GetMapping("/{menuId}")
-    public ResponseEntity<Menu> getMenu(@PathVariable Long menuId) {
-        return ResponseEntity.ok(menuService.getMenu(menuId));
+    // 메뉴 검색 (단독 조회 x, 가게 조회시 함께 조회)
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<MenuResponse>> getMenuByStore(
+            @PathVariable Long storeId,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false, defaultValue = "false") boolean includeDeleted) {
+
+        if (includeDeleted) {
+            return ResponseEntity.ok(menuService.getMenusByHistory(storeId)); // 삭제된 메뉴 제외한 전체
+        } else {
+            return ResponseEntity.ok(menuService.getMenusByStore(storeId, category)); // category가 있을 경우 필터링
+        }
+    }
+
+    // 전체 메뉴 엔티티 조회(팀원 요청)
+    @GetMapping
+    public ResponseEntity<List<MenuResponse>> getMenuEntity() {
+        return ResponseEntity.ok(menuService.getMenuEntity());
     }
 
     // 주문횟수 증가
@@ -59,24 +81,27 @@ public class MenuController {
     }
 
 
-//    // 특정 가게의 메뉴 목록 조회
-//    @GetMapping("/stores/{storeId}")
-//    public ResponseEntity<List<MenuResponse>> getMenusByStore(@PathVariable Long storeId) {
-//        return ResponseEntity.ok(menuService.getMenusByStore(storeId));
-//    }
 
-    // 메뉴 수정
+    // 메뉴 수정(사장님만)
     @PutMapping("/{menuId}")
     public ResponseEntity<Menu> updateMenu(@PathVariable Long menuId, @RequestBody MenuRequest request) {
         return ResponseEntity.ok(menuService.updateMenu(menuId, request));
     }
 
-    // 메뉴 삭제
+    // 메뉴 삭제(본인가게 메뉴만, 메뉴의 상태만 삭제상태)
     @DeleteMapping("/{menuId}")
-    public ResponseEntity<Void> deleteMenu(@PathVariable Long menuId) {
-        menuService.deleteMenu(menuId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteMenu(
+            @PathVariable Long menuId,
+            @RequestParam Long ownerId
+    ) {
+        try {
+            menuService.deleteMenu(menuId, ownerId);
+            return ResponseEntity.ok("메뉴가 삭제 상태로 변경되었습니다.");
+        } catch (SecurityException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
-
 }
 
