@@ -3,6 +3,7 @@ package com.example.ogiyo.domain.store.service;
 import com.example.ogiyo.auth.enums.MemberRole;
 import com.example.ogiyo.domain.member.entity.Member;
 import com.example.ogiyo.domain.member.service.MemberService;
+import com.example.ogiyo.domain.menus.entity.Menu;
 import com.example.ogiyo.domain.store.dto.response.GetStoreResponseDto;
 import com.example.ogiyo.domain.store.dto.response.GetStoresResponseDto;
 import com.example.ogiyo.domain.store.entity.Store;
@@ -45,6 +46,10 @@ public class StoreService {
                 savedStore.getMinPrice(),
                 savedStore.getImageUrl(),
                 savedStore.getStatus().toString());
+    }
+
+    public Store findStore(Long storeId) {
+        return storeRepository.findByIdOrElseThrow(storeId);
     }
 
     @Transactional
@@ -132,7 +137,19 @@ public class StoreService {
         return savedMember;
     }
 
-    public Store getStore(Long storeId) {
-        return storeRepository.findByIdOrElseThrow(storeId);
+    // Menu 도메인에서 Store 에 Menu 를 추가하는 메서드
+    public void addMenu(Long ownerId, Long storeId, Menu menu) {
+        Store savedStore = findByStoreWithOwnerId(ownerId, storeId);
+
+        savedStore.addMenu(menu);
+        storeRepository.save(savedStore);
+    }
+
+    // Menu 도메인에서 Store 에 Menu 를 제거하는 메서드
+    public void removeMenu(Long ownerId, Long storeId, Menu menu) {
+        Store savedStore = findByStoreWithOwnerId(ownerId, storeId);
+
+        savedStore.removeMenu(menu);
+        storeRepository.save(savedStore);
     }
 }
