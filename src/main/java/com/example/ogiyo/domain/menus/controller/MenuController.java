@@ -1,5 +1,5 @@
 package com.example.ogiyo.domain.menus.controller;
-
+import com.example.ogiyo.domain.menus.dto.CreateMenuResponseDto;
 import com.example.ogiyo.domain.menus.dto.MenuRequest;
 import com.example.ogiyo.domain.menus.dto.MenuResponse;
 import com.example.ogiyo.domain.menus.entity.Menu;
@@ -19,10 +19,17 @@ public class MenuController {
 
     // 메뉴 생성
     @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody MenuRequest request) {
-        Menu menu = menuService.createMenu(request.getStoreId(), request.getCategory(), request.getMenuName(),
-                request.getPrice(), request.getOption(), request.getStatus());
-        return ResponseEntity.ok(menu);
+    public ResponseEntity<CreateMenuResponseDto> createMenu(@RequestHeader("Authorization") String token, @RequestBody MenuRequest request) {
+        CreateMenuResponseDto responseDto = menuService.createMenu(
+                token,
+                request.getStoreId(),
+                request.getCategory(),
+                request.getMenuName(),
+                request.getPrice(),
+                request.getMenuOption(),
+                request.getStatus()
+        );
+        return ResponseEntity.ok(responseDto);
     }
 
     // 메뉴 검색 (단독 조회 x, 가게 조회시 함께 조회)
@@ -38,8 +45,6 @@ public class MenuController {
             return ResponseEntity.ok(menuService.getMenusByStore(storeId, category)); // category가 있을 경우 필터링
         }
     }
-
-
 
     // 전체 메뉴 엔티티 조회(팀원 요청)
     @GetMapping
