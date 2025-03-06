@@ -28,7 +28,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public ResponseDto<AddCartResponseDto> addCart(String Token,
                                                    AddCartRequestDto addCartRequestDto) {
-        Long memberId = jwtUtil.extractUserId(Token);
+        Long memberId = jwtUtil.extractMemberId(Token);
         String redisKey = "cart:" + memberId;
 
         //레디스에서 장바구니 정보 조회. 없으면 새로 생성
@@ -59,7 +59,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public ResponseDto<UpdateCartResponseDto> updateCart(String token,
                                                          UpdateCartRequestDto updateCartRequestDto) {
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
         String redisKey = "cart:" + memberId;
 
         // 레디스에서 장바구니 정보 조회
