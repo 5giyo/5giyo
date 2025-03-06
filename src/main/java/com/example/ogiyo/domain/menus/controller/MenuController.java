@@ -16,7 +16,7 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    // 메뉴 생성
+    // 메뉴 생성(사장님만)
     @PostMapping
     public ResponseEntity<Menu> createMenu(@RequestBody MenuRequest request) {
         Menu menu = menuService.createMenu(request.getStoreId(), request.getCategory(), request.getMenuName(),
@@ -24,10 +24,10 @@ public class MenuController {
         return ResponseEntity.ok(menu);
     }
 
-    // 메뉴 검색
-    @GetMapping("/{menuId}")
-    public ResponseEntity<Menu> getMenu(@PathVariable Long menuId) {
-        return ResponseEntity.ok(menuService.getMenu(menuId));
+    // 메뉴 검색 (단독 조회 x, 가게 조회시 함께 조회)
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<MenuResponse>> getMenuByStore(@PathVariable Long storeId, @RequestParam(required = false) String category) {
+        return ResponseEntity.ok(menuService.getMenusByStore(storeId, category));
     }
 
     // 주문횟수 증가
@@ -65,13 +65,13 @@ public class MenuController {
 //        return ResponseEntity.ok(menuService.getMenusByStore(storeId));
 //    }
 
-    // 메뉴 수정
+    // 메뉴 수정(사장님만)
     @PutMapping("/{menuId}")
     public ResponseEntity<Menu> updateMenu(@PathVariable Long menuId, @RequestBody MenuRequest request) {
         return ResponseEntity.ok(menuService.updateMenu(menuId, request));
     }
 
-    // 메뉴 삭제
+    // 메뉴 삭제(본인가게 메뉴만, 메뉴의 상태만 삭제상태)
     @DeleteMapping("/{menuId}")
     public ResponseEntity<Void> deleteMenu(@PathVariable Long menuId) {
         menuService.deleteMenu(menuId);

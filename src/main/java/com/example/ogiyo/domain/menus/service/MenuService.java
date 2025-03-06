@@ -1,5 +1,6 @@
 package com.example.ogiyo.domain.menus.service;
 
+import com.example.ogiyo.domain.menus.dto.MenuResponse;
 import com.example.ogiyo.domain.store.entity.Store;
 import com.example.ogiyo.domain.menus.dto.MenuRequest;
 import com.example.ogiyo.domain.menus.entity.LikeCount;
@@ -11,11 +12,15 @@ import com.example.ogiyo.domain.menus.repository.LikeCountRepository;
 import com.example.ogiyo.domain.menus.repository.MenuRepository;
 import com.example.ogiyo.domain.menus.repository.OrderCountRepository;
 import com.example.ogiyo.domain.menus.repository.SearchCountRepository;
+import com.example.ogiyo.domain.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +30,23 @@ public class MenuService {
     private final OrderCountRepository orderCountRepository;
     private final LikeCountRepository likeCountRepository;
     private final SearchCountRepository searchCountRepository;
+    private final StoreRepository storeRepository;
 
     // 메뉴 추가
     @Transactional
     public Menu createMenu(Long storeId, String category, String menuName, Integer price, String option, Status status) {
+        // 사장님 권한
+        // 현재 로그인한 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName(); // JWT에서 사용자 username 불러오기
+
+        // 로그인한 사용자가 판별
+//        Store store = storeRepository.findById(storeId).
+//                orElseThrow(()->new RuntimeException("가게를 찾을수 없습니다."));
+//
+//        if (!store.get)
+
+
         OrderCount orderCount = orderCountRepository.save(new OrderCount());
         LikeCount likeCount = likeCountRepository.save(new LikeCount());
         SearchCount searchCount = searchCountRepository.save(new SearchCount());
@@ -78,14 +96,16 @@ public class MenuService {
         menu.getSearchCount().increaseSearchCount();
     }
 
-//    // 가게별 메뉴 조회
-//    public List<MenuResponse> getMenusByStore(Long storeId) {
-//        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
-//        return menus.stream()
-//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
-//                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount().getSearchCount())
-//                .collect(Collectors.toList());
-//    }
+    // 가게별 메뉴 조회
+    public List<MenuResponse> getMenusByStore(Long storeId, String category) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()-> new RuntimeException("가게를 찾을수 없습니다."));
+        // 메뉴를 검색 조건에 맞춰 필터링
+        List<Menu> menus = menuRepository.findByStore_StoreIdAndCategory(storeId,category);
+        return menus.stream()
+                .map(menu -> new MenuResponse(menu))
+                .collect(Collectors.toList());
+    }
     // 메뉴 엔티티 전체 반환
 
     // 메뉴 수정
