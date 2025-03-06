@@ -7,15 +7,13 @@ import com.example.ogiyo.domain.cart.dto.request.UpdateCartRequestDto;
 import com.example.ogiyo.domain.cart.dto.response.AddCartResponseDto;
 
 import com.example.ogiyo.domain.cart.dto.response.UpdateCartResponseDto;
-import jakarta.validation.Valid;
 
 public interface CartService {
 
     ResponseDto<AddCartResponseDto> addCart(String token,AddCartRequestDto addCartRequestDto);
 
     ResponseDto<UpdateCartResponseDto> updateCart
-            (String token,
-             @Valid UpdateCartRequestDto updateCartRequestDto);
+            (String token, Long cartId,UpdateCartRequestDto updateCartRequestDto);
 
     ResponseDto<GetCartResponseDto> getCart(Long cartId);
 

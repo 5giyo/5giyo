@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
         ResponseDto<GetCartResponseDto> cartResponse = cartService.getCart(memberId);
 
         BigDecimal getTotalPrice = new BigDecimal(0);
-        //장바구니 안의 아이템들을 갖고옴. 이안에 메뉴Id가 있는데
+
         for(int i =0; i < cartResponse.getData().getItems().size(); i++) {
             Long menuId = cartResponse.getData().getItems().get(i).getMenuId();
             Menu menu = menuRepository.findById(menuId)
@@ -66,10 +66,12 @@ public class OrderServiceImpl implements OrderService {
         //주문생성 후 장바구니 비우기
         cartService.deleteCard(memberId);
 
+
         RequireOrderResponseDto responseDto = new RequireOrderResponseDto(
                 savedOrder.getOrderId(),
                 savedOrder.getOrderStatus()
         );
+
 
         return ResponseDto.success(responseDto);
     }
@@ -82,6 +84,7 @@ public class OrderServiceImpl implements OrderService {
                 .findById(orderId)
                 .orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
 
+        order.updateOrder(OrderStatus.PREPARING);
         AcceptOrderResponseDto acceptOrder = new AcceptOrderResponseDto(
                 order.getOrderId(),
                 OrderStatus.PREPARING
@@ -97,12 +100,29 @@ public class OrderServiceImpl implements OrderService {
                 .findById(orderId)
                 .orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
 
+        order.updateOrder(OrderStatus.REJECTED);
         RejectOrderResponseDto rejectOrder = new RejectOrderResponseDto(
                 order.getOrderId(),
                 OrderStatus.REJECTED
         );
 
         return ResponseDto.success(rejectOrder);
+    }
+
+    //배달완료
+    @Override
+    public ResponseDto<CompleteOrderResponseDto> completeOrder(Long orderId) {
+        Order order = orderRepository
+                .findById(orderId)
+                .orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
+
+        order.updateOrder(OrderStatus.DELIVERED);
+        CompleteOrderResponseDto completeOrder = new CompleteOrderResponseDto(
+                order.getOrderId(),
+                OrderStatus.DELIVERED
+        );
+
+        return ResponseDto.success(completeOrder);
     }
 
 
@@ -112,6 +132,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(orderId);
         return ResponseDto.success("주문이 삭제되었습니다.");
     }
+
 
     //주문 전체 조회하기
     @Override
@@ -136,7 +157,6 @@ public class OrderServiceImpl implements OrderService {
         return ResponseDto.success(getOrder);
     }
 
-    //TODO: 배달완료
 
 
 

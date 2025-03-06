@@ -42,6 +42,10 @@ public class Order extends BaseEntity {
 
     }
 
+    public void updateOrder(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public void update(OrderStatus orderStatus,String paymentMethod) {
         this.orderStatus = orderStatus;
         this.paymentMethod = paymentMethod;

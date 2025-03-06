@@ -35,6 +35,8 @@ public class Coupon extends BaseEntity {
         this.isUsed = isUsed;
     }
 
+
+
     public Coupon() {
 
     }

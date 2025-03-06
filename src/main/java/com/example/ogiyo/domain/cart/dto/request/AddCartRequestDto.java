@@ -10,4 +10,9 @@ import lombok.NoArgsConstructor;
 public class AddCartRequestDto {
     private Long menuId;
     private int quantity;
+
+    public AddCartRequestDto(Long menuId, int quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
 }
