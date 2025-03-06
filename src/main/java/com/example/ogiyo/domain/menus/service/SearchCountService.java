@@ -1,6 +1,5 @@
-package com.example.ogiyo.menus.service;
-import com.example.ogiyo.menus.repository.SearchCountRepository;
-import jakarta.transaction.Transactional;
+package com.example.ogiyo.domain.menus.service;
+import com.example.ogiyo.domain.menus.repository.SearchCountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 @Service

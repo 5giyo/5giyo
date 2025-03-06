@@ -1,24 +1,21 @@
-package com.example.ogiyo.menus.service;
+package com.example.ogiyo.domain.menus.service;
 
 import com.example.ogiyo.domain.store.entity.Store;
-import com.example.ogiyo.menus.dto.MenuRequest;
-import com.example.ogiyo.menus.dto.MenuResponse;
-import com.example.ogiyo.menus.entity.LikeCount;
-import com.example.ogiyo.menus.entity.Menu;
-import com.example.ogiyo.menus.entity.OrderCount;
-import com.example.ogiyo.menus.entity.SearchCount;
-import com.example.ogiyo.menus.enums.Status;
-import com.example.ogiyo.menus.repository.LikeCountRepository;
-import com.example.ogiyo.menus.repository.MenuRepository;
-import com.example.ogiyo.menus.repository.OrderCountRepository;
-import com.example.ogiyo.menus.repository.SearchCountRepository;
+import com.example.ogiyo.domain.menus.dto.MenuRequest;
+import com.example.ogiyo.domain.menus.entity.LikeCount;
+import com.example.ogiyo.domain.menus.entity.Menu;
+import com.example.ogiyo.domain.menus.entity.OrderCount;
+import com.example.ogiyo.domain.menus.entity.SearchCount;
+import com.example.ogiyo.domain.menus.enums.Status;
+import com.example.ogiyo.domain.menus.repository.LikeCountRepository;
+import com.example.ogiyo.domain.menus.repository.MenuRepository;
+import com.example.ogiyo.domain.menus.repository.OrderCountRepository;
+import com.example.ogiyo.domain.menus.repository.SearchCountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,14 +78,14 @@ public class MenuService {
         menu.getSearchCount().increaseSearchCount();
     }
 
-    // 가게별 메뉴 조회
-    public List<MenuResponse> getMenusByStore(Long storeId) {
-        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
-        return menus.stream()
-                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
-                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount()))
-                .collect(Collectors.toList());
-    }
+//    // 가게별 메뉴 조회
+//    public List<MenuResponse> getMenusByStore(Long storeId) {
+//        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
+//        return menus.stream()
+//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
+//                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount().getSearchCount())
+//                .collect(Collectors.toList());
+//    }
     // 메뉴 엔티티 전체 반환
 
     // 메뉴 수정

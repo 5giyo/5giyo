@@ -1,7 +1,7 @@
-package com.example.ogiyo.menus.dto;
+package com.example.ogiyo.domain.menus.dto;
 
-import com.example.ogiyo.menus.entity.Menu;
-import com.example.ogiyo.menus.enums.Status;
+import com.example.ogiyo.domain.menus.entity.Menu;
+import com.example.ogiyo.domain.menus.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +24,17 @@ public class MenuResponse {
     private LocalDateTime modifiedAt;
 
     public MenuResponse(Menu menu) {
+        this.option = menu.getOption();
         this.menuId = menu.getMenuId();
+        this.storeName = menu.getStore().getStoreName();
         this.category = menu.getCategory();
         this.menuName = menu.getMenuName();
         this.price = menu.getPrice();
         this.status = menu.getStatus();
-        this.option = menu.getOption();
         this.modifiedAt = menu.getModifiedAt();
     }
+
+    public MenuResponse(Long menuId, String storeName, String category, String menuName, int price, Status status, int searchCount) {
+    }
+
 }
