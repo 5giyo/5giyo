@@ -54,6 +54,7 @@ public class Store{
         this.status = status;
     }
 
+
     public enum Status {
         OPEN, CLOSED, PERMANENTLY_CLOSED
     }
