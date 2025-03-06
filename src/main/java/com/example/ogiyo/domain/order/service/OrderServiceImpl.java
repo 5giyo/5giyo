@@ -34,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
 
     //주문요청
     @Override
+    @Transactional
     public ResponseDto<RequireOrderResponseDto> requestOrder(String token, RequireOrderRequestDto requireOrderRequestDto) {
         Long memberId = jwtUtil.extractMemberId(token);
 
@@ -95,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
 
     //주문 거절하기(사장님) //TODO: 유저롤 집어넣기.
     @Override
+    @Transactional
     public ResponseDto<RejectOrderResponseDto> rejectOrder(Long orderId) {
         Order order = orderRepository
                 .findById(orderId)
@@ -111,6 +113,7 @@ public class OrderServiceImpl implements OrderService {
 
     //배달완료
     @Override
+    @Transactional
     public ResponseDto<CompleteOrderResponseDto> completeOrder(Long orderId) {
         Order order = orderRepository
                 .findById(orderId)
@@ -128,6 +131,7 @@ public class OrderServiceImpl implements OrderService {
 
     //주문 취소하기(고객) //TODO: 유저롤 집어넣기.
     @Override
+    @Transactional
     public ResponseDto<String> deleteOrder(Long orderId) {
         orderRepository.deleteById(orderId);
         return ResponseDto.success("주문이 삭제되었습니다.");
@@ -162,6 +166,7 @@ public class OrderServiceImpl implements OrderService {
 
     //주문 수정하기(주문상태 변경, 결제수단 변경,등)
     @Override
+    @Transactional
     public ResponseDto<UpdateOrderResponseDto> updateOrder(Long orderId, OrderStatus orderStatus, String paymentMethod) {
 
         Order order = orderRepository.findById(orderId)

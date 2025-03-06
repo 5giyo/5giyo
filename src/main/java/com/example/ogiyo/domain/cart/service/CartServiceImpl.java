@@ -13,6 +13,7 @@ import com.example.ogiyo.domain.cart.entity.CartItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class CartServiceImpl implements CartService {
 
     //장바구니 추가
     @Override
+    @Transactional
     public ResponseDto<AddCartResponseDto> addCart(String token,
                                                    AddCartRequestDto addCartRequestDto) {
         Long memberId = jwtUtil.extractMemberId(token);
@@ -59,6 +61,7 @@ public class CartServiceImpl implements CartService {
 
     //장바구니 수정
     @Override
+    @Transactional
     public ResponseDto<UpdateCartResponseDto> updateCart(String token, Long cartId, UpdateCartRequestDto updateCartRequestDto) {
         Long memberId = jwtUtil.extractMemberId(token);
         String redisKey = "cart:" + memberId;
@@ -78,6 +81,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public ResponseDto<GetCartResponseDto> getCart(Long cartId) {
         String redisKey = "cart:" + cartId;
 
