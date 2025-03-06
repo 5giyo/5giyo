@@ -35,9 +35,9 @@ public class CeoReviewService {
         Store store = storeService.findStore(review.getStore().getStoreId());
         Long memberId = jwtUtil.extractMemberId(token);
 
-/*        if(!store.getMember.getId.equals(memberId)){
+        if(!store.getOwner().getId().equals(memberId)){
             throw new InvalidRequestStateException("해당 가게의 사장이 아닙니다.");
-        }*/
+        }
         Member member = memberService.findById(memberId).orElseThrow(()-> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
         CeoReview ceoReview = new CeoReview(review, member, requestDto.getContent());
