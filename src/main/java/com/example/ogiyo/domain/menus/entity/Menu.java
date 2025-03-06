@@ -75,7 +75,7 @@ public class Menu {
     }
 
     // 비즈니스 로직
-    public void updateMenu(String category, String menuName, Integer price, Status status, String option) {
+    public void updateMenu(String category, String menuName, Integer price, Status status, String menuOption) {
         this.category = category;
         this.menuName = menuName;
         this.price = price;
