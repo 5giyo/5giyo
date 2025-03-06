@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "menu")
 public class Menu {
 
     @Id
@@ -35,7 +36,7 @@ public class Menu {
     @Column(nullable = false)
     private Status status;
 
-    private String option; // 추후 확장 가능
+    private String menuOption; // 추후 확장 가능
 
     @OneToOne
     @JoinColumn(name = "order_count_id")
@@ -57,14 +58,14 @@ public class Menu {
 
     // 생성 메서드(createMenu)
     public static Menu menu(Store store, String category, String menuName, Integer price, Status status,
-                                  String option, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
+                                  String menuOption, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
         return Menu.builder()
                 .store(store)
                 .category(category)
                 .menuName(menuName)
                 .price(price)
                 .status(status)
-                .option(option)
+                .menuOption(menuOption)
                 .orderCount(orderCount)
                 .likeCount(likeCount)
                 .searchCount(searchCount)
@@ -74,12 +75,17 @@ public class Menu {
     }
 
     // 비즈니스 로직
-    public void updateMenu(String category, String menuName, Integer price, Status status, String option) {
+    public void updateMenu(String category, String menuName, Integer price, Status status, String menuOption) {
         this.category = category;
         this.menuName = menuName;
         this.price = price;
         this.status = status;
-        this.option = option;
+        this.menuOption = menuOption;
+        this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void setStatus(Status newStatus) {
+        this.status = newStatus;
         this.modifiedAt = LocalDateTime.now();
     }
 }
