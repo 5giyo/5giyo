@@ -1,5 +1,6 @@
 package com.example.ogiyo.domain.store.controller;
 
+import com.example.ogiyo.common.util.JwtUtil;
 import com.example.ogiyo.domain.store.dto.request.UpdateStoreRequestDto;
 import com.example.ogiyo.domain.store.dto.request.UpdateStoreStatusRequestDto;
 import com.example.ogiyo.domain.store.dto.response.GetStoreResponseDto;
@@ -7,6 +8,7 @@ import com.example.ogiyo.domain.store.service.StoreService;
 import com.example.ogiyo.domain.store.dto.request.CreateStoreRequestDto;
 import com.example.ogiyo.domain.store.dto.response.CreateStoreResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/stores")
 public class StoreController {
     private final StoreService storeService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping
     public ResponseEntity<List<?>> findStores(@RequestParam(required = false) String storeName) {
@@ -30,8 +33,11 @@ public class StoreController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateStoreResponseDto> saveStore(@RequestBody CreateStoreRequestDto dto) {
+    public ResponseEntity<CreateStoreResponseDto> saveStore(RequestEntity<CreateStoreRequestDto> requestEntity) {
+        String jwt = requestEntity.getHeaders().getFirst("Authorization");
+        CreateStoreRequestDto dto = requestEntity.getBody();
         CreateStoreResponseDto responseDto = storeService.saveStore(
+                jwtUtil.extractMemberId(jwt),
                 dto.getStoreName(),
                 dto.getOperatingHours(),
                 dto.getAnnouncement(),
