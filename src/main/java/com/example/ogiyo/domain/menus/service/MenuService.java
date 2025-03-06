@@ -1,9 +1,7 @@
 package com.example.ogiyo.domain.menus.service;
-import com.example.ogiyo.domain.order.entity.Order;
+import com.example.ogiyo.common.util.JwtUtil;
+import com.example.ogiyo.domain.menus.dto.CreateMenuResponseDto;
 import com.example.ogiyo.domain.menus.dto.MenuResponse;
-import com.example.ogiyo.domain.order.dto.response.GetOrderResponseDto;
-import com.example.ogiyo.domain.order.entity.Order;
-import com.example.ogiyo.domain.order.repository.OrderRepository;
 import com.example.ogiyo.domain.store.entity.Store;
 import com.example.ogiyo.domain.menus.dto.MenuRequest;
 import com.example.ogiyo.domain.menus.entity.LikeCount;
@@ -18,40 +16,30 @@ import com.example.ogiyo.domain.menus.repository.SearchCountRepository;
 import com.example.ogiyo.domain.store.repository.StoreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import com.example.ogiyo.domain.store.service.StoreService;
 
 @Service
 @RequiredArgsConstructor
 public class MenuService {
-
+    private final JwtUtil jwtUtil;
     private final MenuRepository menuRepository;
     private final OrderCountRepository orderCountRepository;
     private final LikeCountRepository likeCountRepository;
     private final SearchCountRepository searchCountRepository;
     private final StoreRepository storeRepository;
-    private final OrderRepository orderRepository;
+    private final StoreService storeService;
 
     // 메뉴 추가
     @Transactional
-    public Menu createMenu(Long storeId, String category, String menuName, Integer price, String menuOption, Status status) {
+    public CreateMenuResponseDto createMenu(String token,Long storeId, String category, String menuName, Integer price, String menuOption, Status status) {
         // 사장님 권한
         // 현재 로그인한 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserName = authentication.getName(); // JWT에서 사용자 username 불러오기
-
-         // 로그인한 사용자가 판별
-        Store store = storeRepository.findById(storeId).
-                orElseThrow(()->new RuntimeException("가게를 찾을수 없습니다."));
-
-        if (!store.getOwner().getName().equals(currentUserName)) {
-            throw new RuntimeException("권한이 없습니다. 사장님만 메뉴 생성이 가능합니다.");
-        }
+        Long ownerId = jwtUtil.extractMemberId(token);
+        Store store = storeService.findByStoreWithOwnerId(ownerId, storeId);
         // 권한 체크 이후 메뉴 생성
         OrderCount orderCount = orderCountRepository.save(new OrderCount());
         LikeCount likeCount = likeCountRepository.save(new LikeCount());
@@ -71,7 +59,19 @@ public class MenuService {
                 .modifiedAt(LocalDateTime.now())
                 .build();
 
-        return menuRepository.save(menu);
+        Menu savedMenu = menuRepository.save(menu);
+
+        return CreateMenuResponseDto.builder()
+                .menuId(savedMenu.getMenuId())
+                .storeId(savedMenu.getStore().getStoreId())
+                .category(savedMenu.getCategory())
+                .menuName(savedMenu.getMenuName())
+                .price(savedMenu.getPrice())
+                .menuOption(savedMenu.getMenuOption())
+                .status(savedMenu.getStatus())
+                .createdAt(savedMenu.getCreatedAt())
+                .modifiedAt(savedMenu.getModifiedAt())
+                .build();
     }
 
     // 메뉴 ID로만 메뉴 조회
@@ -121,8 +121,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-
-
     // 메뉴 엔티티 전체 반환(팀원 요청)
     @Transactional
     public List<MenuResponse> getMenuEntity() {
@@ -142,7 +140,7 @@ public class MenuService {
                 dto.getMenuName(),
                 dto.getPrice(),
                 dto.getStatus(),
-                dto.getOption()
+                dto.getMenuOption()
         );
         return menu;
     }
@@ -159,8 +157,6 @@ public class MenuService {
 
         menu.setStatus(Status.DELETED);
     }
-
-
 
 }
 

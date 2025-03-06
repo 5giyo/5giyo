@@ -57,24 +57,24 @@ public class Menu {
     private LocalDateTime modifiedAt;
 
     // 생성 메서드(createMenu)
-    public static Menu menu(Store store, String category, String menuName, Integer price, Status status,
-                                  String menuOption, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
-        return Menu.builder()
-                .store(store)
-                .category(category)
-                .menuName(menuName)
-                .price(price)
-                .status(status)
-                .menuOption(menuOption)
-                .orderCount(orderCount)
-                .likeCount(likeCount)
-                .searchCount(searchCount)
-                .createdAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .build();
-    }
+//    public static Menu menu(Store store, String category, String menuName, Integer price, Status status,
+//                                  String menuOption, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
+//        return Menu.builder()
+//                .store(store)
+//                .category(category)
+//                .menuName(menuName)
+//                .price(price)
+//                .status(status)
+//                .menuOption(menuOption)
+//                .orderCount(orderCount)
+//                .likeCount(likeCount)
+//                .searchCount(searchCount)
+//                .createdAt(LocalDateTime.now())
+//                .modifiedAt(LocalDateTime.now())
+//                .build();
+//    }
 
-    // 비즈니스 로직
+//    // 비즈니스 로직
     public void updateMenu(String category, String menuName, Integer price, Status status, String menuOption) {
         this.category = category;
         this.menuName = menuName;
