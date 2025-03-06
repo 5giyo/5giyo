@@ -15,10 +15,4 @@ public class RequireOrderResponseDto {
         this.orderId = orderId;
         this.orderStatus = orderStatus;
     }
-
-    //보여줄 값 Id,결제수단,총금액,배달상태, 메뉴이름 정도?
-    public static RequireOrderResponseDto fromOrder(Long orderId, OrderStatus orderStatus) {
-        return new RequireOrderResponseDto(orderId,orderStatus);
-
-    }
 }

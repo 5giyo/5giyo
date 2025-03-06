@@ -17,8 +17,6 @@ public interface CartService {
             (String token,
              @Valid UpdateCartRequestDto updateCartRequestDto);
 
-
-
     ResponseDto<GetCartResponseDto> getCart(Long cartId);
 
     ResponseDto<String> deleteCard(Long cartId);

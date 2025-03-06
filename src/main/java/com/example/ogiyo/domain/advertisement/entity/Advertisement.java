@@ -30,6 +30,7 @@ public class Advertisement {
     private Status status;
 
     @OneToOne
+    @JoinColumn(name = "store_id", unique = true)
     private Store store;
 
     public void updateAdvertisement(LocalDateTime startedAt, LocalDateTime endedAt, Status status) {

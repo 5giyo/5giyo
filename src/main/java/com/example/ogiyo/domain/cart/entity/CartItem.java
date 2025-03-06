@@ -11,7 +11,7 @@ public class CartItem implements Serializable {
     @Setter
     private int quantity;
 
-    public CartItem(Long menuId, int quantity) {
+    public CartItem(Long menuId, int quantity ) {
         this.menuId = menuId;
         this.quantity = quantity;
     }

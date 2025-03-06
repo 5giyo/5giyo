@@ -1,5 +1,5 @@
 package com.example.ogiyo.domain.menus.service;
-
+import com.example.ogiyo.domain.order.entity.Order;
 import com.example.ogiyo.domain.menus.dto.MenuResponse;
 import com.example.ogiyo.domain.order.dto.response.GetOrderResponseDto;
 import com.example.ogiyo.domain.order.entity.Order;
@@ -159,6 +159,7 @@ public class MenuService {
 
         menu.setStatus(Status.DELETED);
     }
+
 
 
 }

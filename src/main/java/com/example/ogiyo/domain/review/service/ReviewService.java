@@ -56,7 +56,7 @@ public class ReviewService {
         Member member = memberService.findById(memberId).orElseThrow(()-> new EntityNotFoundException("회원을 찾지 못했습니다."));
 
         Review review = new Review(
-                storeService.getStore(storeId),
+                storeService.findStore(storeId),
                 member,
                 order,
                 reviewRequestDto.getRating(),
@@ -102,7 +102,7 @@ public class ReviewService {
 
     public ResponseDto<PagingReviewResponseDto> getReview(Long storeId, Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
-        Page<Review> reviewPage = reviewRepository.findAllByStoreIdOrderByModifiedAtDesc(storeId, pageRequest);
+        Page<Review> reviewPage = reviewRepository.findAllByStore_StoreIdOrderByModifiedAtDesc(storeId, pageRequest);
 
         List<GetReviewResponseDto> reviews = reviewPage.getContent().stream()
                 .map(review -> {
