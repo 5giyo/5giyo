@@ -1,5 +1,5 @@
-package com.example.ogiyo.menus.repository;
-import com.example.ogiyo.menus.entity.SearchCount;
+package com.example.ogiyo.domain.menus.repository;
+import com.example.ogiyo.domain.menus.entity.SearchCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

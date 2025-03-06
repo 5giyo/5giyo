@@ -1,6 +1,6 @@
-package com.example.ogiyo.menus.dto;
+package com.example.ogiyo.domain.menus.dto;
 
-import com.example.ogiyo.menus.enums.Status;
+import com.example.ogiyo.domain.menus.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

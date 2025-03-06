@@ -1,9 +1,9 @@
-package com.example.ogiyo.menus.controller;
+package com.example.ogiyo.domain.menus.controller;
 
-import com.example.ogiyo.menus.dto.MenuRequest;
-import com.example.ogiyo.menus.dto.MenuResponse;
-import com.example.ogiyo.menus.entity.Menu;
-import com.example.ogiyo.menus.service.MenuService;
+import com.example.ogiyo.domain.menus.dto.MenuRequest;
+import com.example.ogiyo.domain.menus.dto.MenuResponse;
+import com.example.ogiyo.domain.menus.entity.Menu;
+import com.example.ogiyo.domain.menus.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +19,14 @@ public class MenuController {
     // 메뉴 생성
     @PostMapping
     public ResponseEntity<Menu> createMenu(@RequestBody MenuRequest request) {
-        com.example.ogiyo.menus.entity.Menu menu = menuService.createMenu(request.getStoreId(), request.getCategory(), request.getMenuName(),
+        Menu menu = menuService.createMenu(request.getStoreId(), request.getCategory(), request.getMenuName(),
                 request.getPrice(), request.getOption(), request.getStatus());
         return ResponseEntity.ok(menu);
     }
 
     // 메뉴 검색
     @GetMapping("/{menuId}")
-    public ResponseEntity<com.example.ogiyo.menus.entity.Menu> getMenu(@PathVariable Long menuId) {
+    public ResponseEntity<Menu> getMenu(@PathVariable Long menuId) {
         return ResponseEntity.ok(menuService.getMenu(menuId));
     }
 
@@ -59,11 +59,11 @@ public class MenuController {
     }
 
 
-    // 특정 가게의 메뉴 목록 조회
-    @GetMapping("/stores/{storeId}")
-    public ResponseEntity<List<MenuResponse>> getMenusByStore(@PathVariable Long storeId) {
-        return ResponseEntity.ok(menuService.getMenusByStore(storeId));
-    }
+//    // 특정 가게의 메뉴 목록 조회
+//    @GetMapping("/stores/{storeId}")
+//    public ResponseEntity<List<MenuResponse>> getMenusByStore(@PathVariable Long storeId) {
+//        return ResponseEntity.ok(menuService.getMenusByStore(storeId));
+//    }
 
     // 메뉴 수정
     @PutMapping("/{menuId}")
