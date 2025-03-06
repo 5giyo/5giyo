@@ -1,4 +1,4 @@
-package com.example.ogiyo.menus.entity;
+package com.example.ogiyo.domain.menus.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,22 +14,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LikeCount {
+public class OrderCount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long likeCountId;
+    private Long orderCountId;
 
-    private Integer likeCount = 0;
+    private Integer orderCount = 0;
 
-    public void increaseLikeCount() {
-        this.likeCount ++;
-    }
-
-    public void decreaseLikeCount() {
-        if (this.likeCount > 0) {
-            this.likeCount --;
-        }
+    public void increaseOrderCount() {
+        this.orderCount += 1;
     }
 }
 

@@ -1,6 +1,6 @@
-package com.example.ogiyo.menus.repository;
+package com.example.ogiyo.domain.menus.repository;
 
-import com.example.ogiyo.menus.entity.LikeCount;
+import com.example.ogiyo.domain.menus.entity.LikeCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,7 +1,6 @@
-package com.example.ogiyo.menus.service;
+package com.example.ogiyo.domain.menus.service;
 
-import com.example.ogiyo.menus.repository.LikeCountRepository;
-import jakarta.transaction.Transactional;
+import com.example.ogiyo.domain.menus.repository.LikeCountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

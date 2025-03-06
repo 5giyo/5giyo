@@ -1,4 +1,4 @@
-package com.example.ogiyo.menus.enums;
+package com.example.ogiyo.domain.menus.enums;
 
 public enum Status {
     AVAILABLE,  // 판매 가능
