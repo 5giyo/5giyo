@@ -23,9 +23,9 @@ spring:
 
   data:
     redis:
-      password: ${REDIS_PASSWORD}
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD:1234}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6369}
       lettuce:
         pool:
           max-idle: 5
