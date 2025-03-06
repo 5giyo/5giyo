@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     // 가게 ID로 메뉴 조회
-    List<Menu> findByStore_StoreId(Long storeId);
-    List<Menu> findByStore_StoreIdAndCategory(Long storeId, String category);
+    List<Menu> findByStoreId(Long storeId);
+    List<Menu> findByStoreIdAndCategory(Long storeId, String category);
     // Store엔티티의 owner 쿼리 가져오기
     @EntityGraph(attributePaths = {"store.owner"})
     Optional<Menu> findWithStoreAndOwnerById(Long menuId);
-    List<Menu> findByStore_StoreIdAndStatusNot(Long storeId, Status status);
+    List<Menu> findByStoreIdAndStatusNot(Long storeId, Status status);
 
 }

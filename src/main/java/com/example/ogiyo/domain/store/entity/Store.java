@@ -16,7 +16,7 @@ import java.util.List;
 public class Store{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long storeId;
+    private Long id;
 
     @Column(nullable = false)
     private String storeName;
@@ -40,7 +40,7 @@ public class Store{
     @ManyToOne(fetch = FetchType.LAZY)
     Member owner;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
     List<Menu> menus = new ArrayList<>();
 
     public void updateStore(String storeName, String operatingHours, String announcement, Long minPrice, String imageUrl) {

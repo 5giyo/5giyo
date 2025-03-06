@@ -25,7 +25,7 @@ public class MenuResponse {
 
     public MenuResponse(Menu menu) {
         this.menuOption = menu.getMenuOption();
-        this.menuId = menu.getMenuId();
+        this.menuId = menu.getId();
         this.storeName = menu.getStore().getStoreName();
         this.category = menu.getCategory();
         this.menuName = menu.getMenuName();

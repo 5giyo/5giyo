@@ -15,7 +15,7 @@ public class GetStoresResponseDto {
     private String status;
 
     public GetStoresResponseDto(Store store) {
-        this.storeId = store.getStoreId();
+        this.storeId = store.getId();
         this.storeName = store.getStoreName();
         this.minPrice = store.getMinPrice();
         this.imageUrl = store.getImageUrl();

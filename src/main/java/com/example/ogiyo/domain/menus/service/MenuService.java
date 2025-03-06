@@ -46,7 +46,7 @@ public class MenuService {
         SearchCount searchCount = searchCountRepository.save(new SearchCount());
 
         Menu menu = Menu.builder()
-                .store(Store.builder().storeId(storeId).build())  // 가게 ID 설정
+                .store(Store.builder().id(storeId).build())  // 가게 ID 설정
                 .category(category)
                 .menuName(menuName)
                 .price(price)
@@ -62,8 +62,8 @@ public class MenuService {
         Menu savedMenu = menuRepository.save(menu);
 
         return CreateMenuResponseDto.builder()
-                .menuId(savedMenu.getMenuId())
-                .storeId(savedMenu.getStore().getStoreId())
+                .menuId(savedMenu.getId())
+                .storeId(savedMenu.getStore().getId())
                 .category(savedMenu.getCategory())
                 .menuName(savedMenu.getMenuName())
                 .price(savedMenu.getPrice())
@@ -107,7 +107,7 @@ public class MenuService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()-> new RuntimeException("가게를 찾을수 없습니다."));
         // 메뉴를 검색 조건에 맞춰 필터링
-        List<Menu> menus = menuRepository.findByStore_StoreIdAndCategory(storeId,category);
+        List<Menu> menus = menuRepository.findByStoreIdAndCategory(storeId,category);
         return menus.stream()
                 .map(MenuResponse::new)
                 .collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class MenuService {
 
     // 메뉴 조회(삭제된 메뉴 제외)
     public List<MenuResponse> getMenusByHistory(Long storeId) {
-        List<Menu> menus = menuRepository.findByStore_StoreIdAndStatusNot(storeId, Status.DELETED);
+        List<Menu> menus = menuRepository.findByStoreIdAndStatusNot(storeId, Status.DELETED);
         return menus.stream()
                 .map(MenuResponse::new)
                 .collect(Collectors.toList());
