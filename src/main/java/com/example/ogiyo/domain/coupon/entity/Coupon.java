@@ -22,7 +22,6 @@ public class Coupon extends BaseEntity {
     private boolean isUsed;
 
 
-
     @ManyToOne
     private Member member;
 
@@ -37,7 +36,6 @@ public class Coupon extends BaseEntity {
     public Coupon() {
 
     }
-
 
     public void update(UpdateCouponRequestDto dto) {
         this.discountAmount = dto.getDiscountAmount();

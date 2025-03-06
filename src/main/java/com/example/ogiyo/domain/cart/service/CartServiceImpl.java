@@ -67,6 +67,7 @@ public class CartServiceImpl implements CartService {
         if (cart == null) {
             throw new IllegalArgumentException("장바구니가 조회되지 않습니다.");
         }
+
         // 해당 아이템의 수량 업데이트
         cart.updateItemQuantity(updateCartRequestDto.getMenuId(), updateCartRequestDto.getQuantity());
         redisTemplate.opsForValue().set(redisKey, cart,24, TimeUnit.HOURS);
@@ -99,8 +100,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseDto<String> deleteCard(Long cartId) {
-        String rediskey = "cart:" + cartId;
-        redisTemplate.delete(rediskey);
+        String redisKey = "cart:" + cartId;
+        redisTemplate.delete(redisKey);
         return ResponseDto.success("장바구니를 삭제하였습니다.");
     }
 
