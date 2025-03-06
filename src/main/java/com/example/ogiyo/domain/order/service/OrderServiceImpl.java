@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     //주문요청
     @Override
     public ResponseDto<RequireOrderResponseDto> requestOrder(String token, RequireOrderRequestDto requireOrderRequestDto) {
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
         ResponseDto<GetCartResponseDto> cartResponse = cartService.getCart(memberId);
 
