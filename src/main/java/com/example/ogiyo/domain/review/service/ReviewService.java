@@ -3,15 +3,17 @@ package com.example.ogiyo.domain.review.service;
 import com.example.ogiyo.common.dto.ResponseDto;
 import com.example.ogiyo.common.s3.S3Manager;
 import com.example.ogiyo.common.util.JwtUtil;
+import com.example.ogiyo.domain.member.entity.Member;
 import com.example.ogiyo.domain.member.service.MemberService;
+import com.example.ogiyo.domain.order.entity.Order;
+import com.example.ogiyo.domain.order.entity.OrderStatus;
+import com.example.ogiyo.domain.order.service.OrderServiceImpl;
 import com.example.ogiyo.domain.photo.domainType.DomainType;
 import com.example.ogiyo.domain.photo.dto.PhotoUrlResponse;
 import com.example.ogiyo.domain.photo.entity.Photo;
 import com.example.ogiyo.domain.photo.service.PhotoService;
 import com.example.ogiyo.domain.review.dto.response.UpdateReviewResponseDto;
 import com.example.ogiyo.domain.store.service.StoreService;
-import com.example.ogiyo.order.entity.OrderStatus;
-import com.example.ogiyo.order.service.OrderService;
 import com.example.ogiyo.domain.review.dto.request.SaveReviewRequestDto;
 import com.example.ogiyo.domain.review.dto.request.UpdateReviewRequestDto;
 import com.example.ogiyo.domain.review.dto.response.GetReviewResponseDto;
@@ -30,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,25 +39,26 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final StoreService storeService;
     private final MemberService memberService;
-    private final OrderService orderService;
+    private final OrderServiceImpl orderService;
     private final PhotoService photoService;
     private final JwtUtil jwtUtil;
     private final S3Manager s3Manager;
 
     @Transactional
     public ResponseDto<SaveReviewResponseDto> saveReview(Long storeId, String token, SaveReviewRequestDto reviewRequestDto, List<MultipartFile> photos) {
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
         Order order = orderService.findOrder(reviewRequestDto.getOrderId());
         OrderStatus orderStatus = order.getOrderStatus();
         if(!OrderStatus.DELIVERED.equals(orderStatus)) {
             throw new InvalidRequestStateException("배달 완료된 주문만 리뷰를 작성할 수 있습니다.");
         }
+        Member member = memberService.findById(memberId).orElseThrow(()-> new EntityNotFoundException("회원을 찾지 못했습니다."));
 
         Review review = new Review(
                 storeService.getStore(storeId),
-                memberService.findById(memberId),
-                orderService.findOrder(reviewRequestDto.getOrderId()),
+                member,
+                order,
                 reviewRequestDto.getRating(),
                 reviewRequestDto.getContent()
         );
@@ -109,7 +111,7 @@ public class ReviewService {
 
                     return new GetReviewResponseDto(
                         review.getId(),
-                        review.getMember().getName,
+                        review.getMember().getName(),
                         review.getModifiedAt(),
                         review.getRating(),
                         photoUrls,
@@ -129,7 +131,7 @@ public class ReviewService {
 
     @Transactional
     public ResponseDto<UpdateReviewResponseDto> updateReview(Long reviewId, String token, UpdateReviewRequestDto requestDto) {
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new IllegalArgumentException("수정하려는 리뷰를 찾을 수 없습니다."));
@@ -149,7 +151,7 @@ public class ReviewService {
 
     @Transactional
     public ResponseDto<String> deleteReview(Long reviewId, String token) {
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new IllegalArgumentException("수정하려는 리뷰를 찾을 수 없습니다."));

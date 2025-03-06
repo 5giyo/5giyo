@@ -33,11 +33,11 @@ public class CeoReviewService {
         Review review = reviewService.getReviewById(reviewId);
 
         Store store = storeService.getStore(review.getStore().getStoreId());
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
-        if(!store.getMember.getId.equals(memberId)){
+/*        if(!store.getMember.getId.equals(memberId)){
             throw new InvalidRequestStateException("해당 가게의 사장이 아닙니다.");
-        }
+        }*/
         Member member = memberService.findById(memberId).orElseThrow(()-> new EntityNotFoundException("회원을 찾을 수 없습니다."));
 
         CeoReview ceoReview = new CeoReview(review, member, requestDto.getContent());
@@ -52,7 +52,7 @@ public class CeoReviewService {
     @Transactional
     public ResponseDto<UpdateCeoReviewResponseDto> updateCeoReview(Long reviewId, String token, UpdateCeoReviewRequestDto requestDto) {
         CeoReview ceoReview = ceoReviewRepository.findById(reviewId).orElseThrow(()-> new EntityNotFoundException("수정하려는 답글이 없습니다."));
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
         if(!ceoReview.getMember().getId().equals(memberId)){
             throw new InvalidRequestStateException("가게 사장님에게만 수정 권한이 있습니다.");
@@ -66,7 +66,7 @@ public class CeoReviewService {
 
     public ResponseDto<String> deleteCeoReview(Long reviewId, String token) {
         CeoReview ceoReview = ceoReviewRepository.findById(reviewId).orElseThrow(()-> new EntityNotFoundException("수정하려는 답글이 없습니다."));
-        Long memberId = jwtUtil.extractUserId(token);
+        Long memberId = jwtUtil.extractMemberId(token);
 
         if(!ceoReview.getMember().getId().equals(memberId)){
             throw new InvalidRequestStateException("가게 사장님에게만 삭제 권한이 있습니다.");

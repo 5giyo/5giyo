@@ -1,5 +1,6 @@
 package com.example.ogiyo.domain.photo.service;
 
+import com.example.ogiyo.common.s3.S3Manager;
 import com.example.ogiyo.domain.photo.domainType.DomainType;
 import com.example.ogiyo.domain.photo.dto.PhotoUrlResponse;
 import com.example.ogiyo.domain.photo.entity.Photo;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PhotoService {
     private final PhotoRepository photoRepository;
+    private final S3Manager s3Manager;
 
     public int findMaxSeq(Long domainKey) {
         return photoRepository.findMaxSeqByDomainKey(domainKey);
@@ -27,6 +29,10 @@ public class PhotoService {
     }
 
     public void deleteByDomainTypeAndDomainKey(DomainType domainType, Long domainKey) {
+        List<Photo> photos = photoRepository.findByDomainTypeAndDomainKey(domainType, domainKey);
+        for (Photo photo : photos) {
+            s3Manager.deleteFile(photo.getPhotoKeyName()); // S3에서 삭제
+        }
         photoRepository.deleteByDomainTypeAndDomainKey(domainType, domainKey);
     }
 

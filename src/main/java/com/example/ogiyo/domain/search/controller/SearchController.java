@@ -23,9 +23,5 @@ public class SearchController {
     public ResponseEntity<List<SearchResponseDto>> search(@RequestParam String name) {
         return ResponseEntity.ok(searchService.findAllByName(name));
     }
-
-    @GetMapping("/popular-keyword")
-    public ResponseEntity<ResponseDto<?>> popularKeyword() {
-
-    }
+    
 }
