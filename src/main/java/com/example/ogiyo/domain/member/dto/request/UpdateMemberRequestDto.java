@@ -1,29 +1,25 @@
-package com.example.ogiyo.auth.dto.request;
+package com.example.ogiyo.domain.member.dto.request;
 
-import com.example.ogiyo.auth.enums.MemberRole;
 import com.example.ogiyo.common.etc.Const;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public class SignUpMemberRequestDto {
+@AllArgsConstructor
+public class UpdateMemberRequestDto {
+    private final String name;
 
-    @NotNull
-    @Email
     @Pattern(regexp = Const.EMAIL_REGEX)
-    @Size(min = 8, max = 100)
+    @Email
+    @Size(min = 10, max = 30)
     private final String email;
 
     @NotNull
-    @Pattern(regexp = Const.PASSWORD_REGEX)
     @Size(min = 8, max = 20)
+    @Pattern(regexp = Const.PASSWORD_REGEX)
     private final String password;
-
-    @NotNull
-    private final MemberRole role;
 }

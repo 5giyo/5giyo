@@ -20,7 +20,7 @@ public class ExControllerAdvice {
 
     @ExceptionHandler(NotFoundUserException.class)
     public ResponseEntity<ErrorMessage> notFoundUserExHandle(NotFoundUserException e) {
-        return new ResponseEntity<>(new ErrorMessage(ErrorCode.NOT_FOUND_USER, e.getStatusCode()), e.getStatusCode());
+        return new ResponseEntity<>(new ErrorMessage(ErrorCode.NOT_FOUND_MEMBER, e.getStatusCode()), e.getStatusCode());
     }
 
     @ExceptionHandler(InvalidPasswordOrEmailException.class)
