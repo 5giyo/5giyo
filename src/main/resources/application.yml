@@ -3,7 +3,7 @@
 
 spring:
   application:
-    name: Ogiyo
+    name: ogiyo
 
   datasource:
     url: ${DB_URL}
@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         show_sql: true
@@ -25,7 +25,7 @@ spring:
     redis:
       password: ${REDIS_PASSWORD:1234}
       host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6369}
+      port: ${REDIS_PORT:6379}
       lettuce:
         pool:
           max-idle: 5

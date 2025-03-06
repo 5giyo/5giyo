@@ -5,6 +5,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class NotFoundUserException extends ResponseStatusException {
     public NotFoundUserException() {
-        super(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_USER.getMessage());
+        super(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND_MEMBER.getMessage());
     }
 }
