@@ -21,14 +21,14 @@ public class OrderController {
 
     private final OrderServiceImpl orderServiceImpl;
 
-//    //TODO:주문 요청하기 장바구니 기능과 함께 수정 필요함.
-//    @PostMapping
-//    public ResponseEntity<ResponseDto<?>> addOrder(
-//            @RequestHeader(JwtProperties.HEADER_STRING) String token,
-//            @Valid @RequestBody RequireOrderRequestDto requireOrderRequestDto
-//    ) {
-//        return ResponseEntity.ok(orderServiceImpl.requireOrder(token,requireOrderRequestDto));
-//    }
+    //TODO:주문 요청하기 장바구니 기능과 함께 수정 필요함.
+    @PostMapping
+    public ResponseEntity<ResponseDto<?>> addOrder(
+            @RequestHeader(JwtProperties.HEADER_STRING) String token,
+            @Valid @RequestBody RequireOrderRequestDto requireOrderRequestDto
+    ) {
+        return ResponseEntity.ok(orderServiceImpl.requestOrder(token,requireOrderRequestDto));
+    }
 
     //주문 거절하기
     @PostMapping("/{orderId}/reject")

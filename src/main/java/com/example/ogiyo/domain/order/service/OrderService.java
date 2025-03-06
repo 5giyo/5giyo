@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrderService {
 
     //주문요청하기
-//    ResponseDto<RequireOrderResponseDto> requireOrder(String token, RequireOrderRequestDto requireOrderRequestDto);
+    ResponseDto<RequireOrderResponseDto> requestOrder(String token, RequireOrderRequestDto requireOrderRequestDto);
 
     //주문수락하기
     ResponseDto<AcceptOrderResponseDto> acceptOrder(Long orderId);

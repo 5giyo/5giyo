@@ -5,6 +5,7 @@ import com.example.ogiyo.common.util.JwtUtil;
 import com.example.ogiyo.domain.cart.dto.request.AddCartRequestDto;
 import com.example.ogiyo.domain.cart.dto.request.UpdateCartRequestDto;
 import com.example.ogiyo.domain.cart.dto.response.AddCartResponseDto;
+import com.example.ogiyo.domain.cart.dto.response.GetCartItemResponseDto;
 import com.example.ogiyo.domain.cart.dto.response.GetCartResponseDto;
 import com.example.ogiyo.domain.cart.dto.response.UpdateCartResponseDto;
 import com.example.ogiyo.domain.cart.entity.Cart;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +26,7 @@ public class CartServiceImpl implements CartService {
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, Cart> redisTemplate;
 
-
+    //장바구니 삭제
     @Override
     public ResponseDto<AddCartResponseDto> addCart(String Token,
                                                    AddCartRequestDto addCartRequestDto) {
@@ -36,7 +38,6 @@ public class CartServiceImpl implements CartService {
         if (cart == null) {
             cart = new Cart(memberId);
         }
-
 
         //새 CartItem 생성 및 추가
         CartItem newItem = new CartItem(
@@ -56,6 +57,7 @@ public class CartServiceImpl implements CartService {
         return ResponseDto.success(responseDto);
     }
 
+    //장바구니 수정
     @Override
     public ResponseDto<UpdateCartResponseDto> updateCart(String token,
                                                          UpdateCartRequestDto updateCartRequestDto) {
@@ -81,6 +83,7 @@ public class CartServiceImpl implements CartService {
         return ResponseDto.success(responseDto);
     }
 
+    //장바구니 정보 조회
     @Override
     public ResponseDto<GetCartResponseDto> getCart(Long cartId) {
         String redisKey = "cart:" + cartId;
@@ -90,20 +93,28 @@ public class CartServiceImpl implements CartService {
         if (cart == null) {
             throw new IllegalArgumentException("장바구니가 조회되지 않습니다.");
         }
+        ArrayList<GetCartItemResponseDto> items = new ArrayList<>();
+
+        for (int i = 0; i < cart.getItems().size(); i++) {
+            CartItem cartItem = cart.getItems().get(i);
+            items.add(new GetCartItemResponseDto(
+                    cartItem.getMenuId()
+                   ));
+        }
 
         GetCartResponseDto responseDto = new GetCartResponseDto(
-                new ArrayList<>(cart.getItems().values()),
+                items,
                 cart.getTotalQuantity()
         );
         return ResponseDto.success(responseDto);
     }
 
+    //장바구니 삭제
     @Override
     public ResponseDto<String> deleteCard(Long cartId) {
         String redisKey = "cart:" + cartId;
         redisTemplate.delete(redisKey);
         return ResponseDto.success("장바구니를 삭제하였습니다.");
     }
-
 
 }

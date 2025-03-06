@@ -4,6 +4,8 @@ package com.example.ogiyo.domain.coupon.controller;
 import com.example.ogiyo.common.dto.ResponseDto;
 import com.example.ogiyo.common.etc.JwtProperties;
 import com.example.ogiyo.domain.coupon.dto.request.CreateCouponRequestDto;
+import com.example.ogiyo.domain.coupon.dto.request.GetCouponRequestDto;
+import com.example.ogiyo.domain.coupon.dto.request.UpdateCouponRequestDto;
 import com.example.ogiyo.domain.coupon.entity.Coupon;
 import com.example.ogiyo.domain.coupon.service.CouponServiceImpl;
 import jakarta.validation.Valid;
@@ -25,19 +27,20 @@ public class CouponController {
 
     @GetMapping
     public ResponseEntity<ResponseDto<?>> getAllCoupons(
-            @PathVariable Long memberId
     ) {
         return ResponseEntity.ok(couponServiceimpl.findAllCoupons());
     }
 
-    @GetMapping
-    public void getCouponById(@RequestParam("id") Long id) {
-
+    @GetMapping("/{couponId}")
+    public ResponseEntity<ResponseDto<?>> getCouponById(@PathVariable Long couponId,
+                                                        @RequestBody GetCouponRequestDto requestDto) {
+        return ResponseEntity.ok(couponServiceimpl.getCoupon(couponId));
     }
 
-    @PatchMapping
-    public void updateCoupon(@RequestBody Coupon coupon) {
-
+    @PatchMapping("/{couponId}")
+    public ResponseEntity<ResponseDto<?>> updateCoupon(@PathVariable Long couponId,
+                                                       @RequestBody UpdateCouponRequestDto requestDto) {
+        return ResponseEntity.ok(couponServiceimpl.updateCoupon(couponId,requestDto));
     }
 
     @DeleteMapping

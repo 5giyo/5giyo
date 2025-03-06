@@ -17,7 +17,7 @@ public class CartController {
 
     private final CartServiceImpl cartServiceImpl;
 
-    //TODO:장바구니 추가
+    //장바구니 추가
     @PostMapping
     public ResponseEntity<ResponseDto<?>> addCart(
             @RequestHeader(JwtProperties.HEADER_STRING) String token,
@@ -26,7 +26,7 @@ public class CartController {
         return ResponseEntity.ok(cartServiceImpl.addCart(token,addCartRequestDto));
     }
 
-    //TODO:장바구니 수정
+    //장바구니 수정
     @PatchMapping("/{cartId}")
     public ResponseEntity<ResponseDto<?>> updateCart(
             @RequestHeader(JwtProperties.HEADER_STRING) String token,
@@ -35,10 +35,16 @@ public class CartController {
         return ResponseEntity.ok(cartServiceImpl.updateCart(token,updateCartRequestDto));
     }
 
-    //TODO:장바구니 조회
+    //장바구니 조회
+    @GetMapping("/{cartId}")
+    public ResponseEntity<ResponseDto<?>> getCart(
+            @PathVariable Long cartId
+    ) {
+        return ResponseEntity.ok(cartServiceImpl.getCart(cartId));
+    }
 
 
-    //TODO:장바구니 삭제
+    //장바구니 삭제
     @DeleteMapping("/{cartId}")
     public ResponseEntity<ResponseDto<?>> deleteCart(@PathVariable Long cartId) {
 
