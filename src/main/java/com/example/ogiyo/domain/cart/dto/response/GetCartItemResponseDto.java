@@ -3,11 +3,14 @@ package com.example.ogiyo.domain.cart.dto.response;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.math.BigDecimal;
 
 @Getter
 @RequiredArgsConstructor
-public class UpdateCartResponseDto {
-    private final Long cartId;
-    private final int quantity;
+public class GetCartItemResponseDto {
+    private Long menuId;
+
+    public GetCartItemResponseDto(Long menuId) {
+        this.menuId = menuId;
+
+    }
 }
