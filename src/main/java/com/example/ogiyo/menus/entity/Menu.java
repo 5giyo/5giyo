@@ -30,7 +30,7 @@ public class Menu {
     private String menuName;
 
     @Column(nullable = false)
-    private Integer price;
+    private int price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -56,8 +56,8 @@ public class Menu {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    // 생성 메서드
-    public static Menu createMenu(Store store, String category, String menuName, Integer price, Status status,
+    // 생성 메서드(createMenu)
+    public static Menu menu(Store store, String category, String menuName, Integer price, Status status,
                                   String option, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
         return Menu.builder()
                 .store(store)

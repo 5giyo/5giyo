@@ -19,10 +19,13 @@ public class SearchCount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long searchCountId;
 
-    private Integer searchCount = 0;
+    private int searchCount = 0;
 
     public void increaseSearchCount() {
         this.searchCount ++;
+    }
+    public int getSearchCount() {
+        int count = this.searchCount;
     }
 }
 

@@ -81,14 +81,14 @@ public class MenuService {
         menu.getSearchCount().increaseSearchCount();
     }
 
-    // 가게별 메뉴 조회
-    public List<MenuResponse> getMenusByStore(Long storeId) {
-        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
-        return menus.stream()
-                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
-                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount()))
-                .collect(Collectors.toList());
-    }
+//    // 가게별 메뉴 조회
+//    public List<MenuResponse> getMenusByStore(Long storeId) {
+//        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
+//        return menus.stream()
+//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
+//                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount().getSearchCount())
+//                .collect(Collectors.toList());
+//    }
     // 메뉴 엔티티 전체 반환
 
     // 메뉴 수정
