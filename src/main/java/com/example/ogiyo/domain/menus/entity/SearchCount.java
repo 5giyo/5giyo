@@ -24,8 +24,8 @@ public class SearchCount {
     public void increaseSearchCount() {
         this.searchCount ++;
     }
-    public int getSearchCount() {
-        int count = this.searchCount;
-    }
+//    public int getSearchCount() {
+//        int count = this.searchCount;
+//    }
 }
 

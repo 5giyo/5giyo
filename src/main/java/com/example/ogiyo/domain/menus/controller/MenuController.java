@@ -59,11 +59,11 @@ public class MenuController {
     }
 
 
-    // 특정 가게의 메뉴 목록 조회
-    @GetMapping("/stores/{storeId}")
-    public ResponseEntity<List<MenuResponse>> getMenusByStore(@PathVariable Long storeId) {
-        return ResponseEntity.ok(menuService.getMenusByStore(storeId));
-    }
+//    // 특정 가게의 메뉴 목록 조회
+//    @GetMapping("/stores/{storeId}")
+//    public ResponseEntity<List<MenuResponse>> getMenusByStore(@PathVariable Long storeId) {
+//        return ResponseEntity.ok(menuService.getMenusByStore(storeId));
+//    }
 
     // 메뉴 수정
     @PutMapping("/{menuId}")
