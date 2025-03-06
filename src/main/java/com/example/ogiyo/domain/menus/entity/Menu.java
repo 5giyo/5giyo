@@ -58,14 +58,14 @@ public class Menu {
 
     // 생성 메서드(createMenu)
     public static Menu menu(Store store, String category, String menuName, Integer price, Status status,
-                                  String option, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
+                                  String menuOption, OrderCount orderCount, LikeCount likeCount, SearchCount searchCount) {
         return Menu.builder()
                 .store(store)
                 .category(category)
                 .menuName(menuName)
                 .price(price)
                 .status(status)
-                .menuOption(option)
+                .menuOption(menuOption)
                 .orderCount(orderCount)
                 .likeCount(likeCount)
                 .searchCount(searchCount)
