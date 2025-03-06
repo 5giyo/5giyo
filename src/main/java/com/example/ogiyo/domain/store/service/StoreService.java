@@ -131,4 +131,8 @@ public class StoreService {
         }
         return savedMember;
     }
+
+    public Store getStore(Long storeId) {
+        return storeRepository.findByIdOrElseThrow(storeId);
+    }
 }

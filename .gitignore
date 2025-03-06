@@ -38,3 +38,9 @@ out/
 
 ### properties ###
 *.env
+
+# macOS 시스템 파일
+.DS_Store
+
+# Gradle Wrapper (보통 필요 없으면 제외)
+gradle/wrapper/gradle-wrapper.properties
