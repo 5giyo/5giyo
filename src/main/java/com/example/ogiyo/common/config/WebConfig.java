@@ -1,17 +1,16 @@
 package com.example.ogiyo.common.config;
 
-import com.example.ogiyo.auth.service.AuthService;
 import com.example.ogiyo.common.filter.JwtLoginFilter;
 import com.example.ogiyo.common.util.JwtUtil;
 import com.example.ogiyo.domain.member.service.MemberService;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.ConcreteProxy;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ConcreteProxy
+@Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     private final JwtUtil jwtUtil;
