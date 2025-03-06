@@ -34,7 +34,7 @@ public class MenuService {
         SearchCount searchCount = searchCountRepository.save(new SearchCount());
 
         Menu menu = Menu.builder()
-                .store(Store.builder().storeId(storeId).build())  // 가게 ID 설정
+                .store(Store.builder().id(storeId).build())  // 가게 ID 설정
                 .category(category)
                 .menuName(menuName)
                 .price(price)

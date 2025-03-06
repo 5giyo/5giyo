@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @EntityGraph(attributePaths = {"member", "ceoReview"})
-    Page<Review> findAllByStore_StoreIdOrderByModifiedAtDesc(Long storeId, Pageable pageable);
+    Page<Review> findAllByStoreIdOrderByModifiedAtDesc(Long storeId, Pageable pageable);
 }

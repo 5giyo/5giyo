@@ -39,7 +39,7 @@ public class StoreService {
         Store savedStore = storeRepository.findByIdOrElseThrow(storeId);
 
         return new GetStoreResponseDto(
-                savedStore.getStoreId(),
+                savedStore.getId(),
                 savedStore.getStoreName(),
                 savedStore.getOperatingHours(),
                 savedStore.getAnnouncement(),
@@ -75,7 +75,7 @@ public class StoreService {
 
         Store savedStore = storeRepository.save(store);
         savedStore.getOwner().addCountOwnedStore();
-        return new CreateStoreResponseDto(savedStore.getStoreId(), savedStore.getStoreName(), Status.OPEN.toString());
+        return new CreateStoreResponseDto(savedStore.getId(), savedStore.getStoreName(), Status.OPEN.toString());
     }
 
     public void updateStore(Long storeId, String storeName, String operatingHours, String announcement, Long minPrice, String imageUrl) {
