@@ -82,7 +82,7 @@ public class MenuService {
 //    public List<MenuResponse> getMenusByStore(Long storeId) {
 //        List<Menu> menus = menuRepository.findByStore_StoreId(storeId);
 //        return menus.stream()
-//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getStoreName(), menu.getCategory(),
+//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.findStore().getStoreName(), menu.getCategory(),
 //                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount().getSearchCount())
 //                .collect(Collectors.toList());
 //    }
@@ -124,7 +124,7 @@ public class MenuService {
 //        });
 //
 //        return menus.stream()
-//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.getStore().getName(), menu.getCategory(),
+//                .map(menu -> new MenuResponse(menu.getMenuId(), menu.findStore().getName(), menu.getCategory(),
 //                        menu.getMenuName(), menu.getPrice(), menu.getStatus(), menu.getSearchCount()))
 //                .collect(Collectors.toList());
 //    }
