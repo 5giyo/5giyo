@@ -3,6 +3,7 @@ package com.example.ogiyo.common.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.ogiyo.common.dto.JwtToken;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -22,24 +23,65 @@ public class JwtUtil {
     private final AuthService authService;
 
     // 토큰 생성
-    public String generateToken(Long id, String email) {
-        return JWT.create()
+    public JwtToken generateToken(Long id, String email) {
+        long now = System.currentTimeMillis();
+
+        String accessToken = JWT.create()
                 .withSubject(JwtProperties.APP_TITLE)
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+                .withIssuedAt(new Date(now))
+                .withExpiresAt(new Date(now + JwtProperties.ACCESS_EXPIRATION_TIME))
                 .withClaim("id", id)
                 .withClaim("email", email)
                 .sign(Algorithm.HMAC256(key.getEncoded()));
+
+        String refreshToken = JWT.create()
+                .withSubject(JwtProperties.APP_TITLE)
+                .withIssuedAt(new Date(now))
+                .withExpiresAt(new Date(now + JwtProperties.REFRESH_EXPIRATION_TIME))
+                .withClaim("id", id)
+                .withClaim("email", email)
+                .sign(Algorithm.HMAC256(key.getEncoded()));
+
+        return JwtToken.builder()
+                .grantType(JwtProperties.TOKEN_PREFIX)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
-    // 토큰에서 이메일 값 가져오기
+    //로그아웃용 토큰 만료시키기
+    public JwtToken generateExpiredToken(Long id, String email) {
+        long now = System.currentTimeMillis();
+
+        String accessToken = JWT.create()
+                .withSubject(JwtProperties.APP_TITLE)
+                .withIssuedAt(new Date(now))
+                .withExpiresAt(new Date(now))
+                .withClaim("id", id)
+                .withClaim("email", email)
+                .sign(Algorithm.HMAC256(key.getEncoded()));
+
+        String refreshToken = JWT.create()
+                .withSubject(JwtProperties.APP_TITLE)
+                .withIssuedAt(new Date(now))
+                .withExpiresAt(new Date(now))
+                .withClaim("id", id)
+                .withClaim("email", email)
+                .sign(Algorithm.HMAC256(key.getEncoded()));
+
+        return JwtToken.builder()
+                .grantType(JwtProperties.TOKEN_PREFIX)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
     public String extractEmail(String token) {
         String reToken = token.replace(JwtProperties.TOKEN_PREFIX, "");
         return JWT.require(Algorithm.HMAC256(key.getEncoded())).build().verify(reToken).getClaim("email").asString();
     }
 
-    // 토큰에서 유저 Id 값 가져오기
-    public Long extractUserId(String token) {
+    public Long extractMemberId(String token) {
         String reToken = token.replace(JwtProperties.TOKEN_PREFIX, "");
         return Long.parseLong(JWT.require(Algorithm.HMAC256(key.getEncoded())).build().verify(reToken).getClaim("id").toString());
     }
