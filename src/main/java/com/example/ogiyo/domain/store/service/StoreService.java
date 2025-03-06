@@ -45,7 +45,10 @@ public class StoreService {
                 savedStore.getAnnouncement(),
                 savedStore.getMinPrice(),
                 savedStore.getImageUrl(),
-                savedStore.getStatus().toString());
+                savedStore.getStatus().toString(),
+                savedStore.getMenus().stream()
+                        .map(Menu::getMenuName)
+                        .toList());
     }
 
     public Store findStore(Long storeId) {

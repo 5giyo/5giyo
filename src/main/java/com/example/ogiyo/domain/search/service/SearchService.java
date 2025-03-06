@@ -13,7 +13,8 @@ public class SearchService {
     private final StoreRepository storeRepository;
 
     public List<SearchResponseDto> findAllByName(String name) {
-//        storeRepository.findAllByName(name);
-        return List.of();
+        return storeRepository.findAllByName(name).stream()
+                .map(SearchResponseDto::new)
+                .toList();
     }
 }
