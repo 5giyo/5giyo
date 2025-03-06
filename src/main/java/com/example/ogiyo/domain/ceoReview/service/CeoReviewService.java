@@ -32,7 +32,7 @@ public class CeoReviewService {
     public ResponseDto<SaveCeoReviewResponseDto> saveCeoReview(Long reviewId, String token, SaveCeoReviewRequestDto requestDto) {
         Review review = reviewService.getReviewById(reviewId);
 
-        Store store = storeService.findStore(review.getStore().getStoreId());
+        Store store = storeService.findStore(review.getStore().getId());
         Long memberId = jwtUtil.extractMemberId(token);
 
         if(!store.getOwner().getId().equals(memberId)){

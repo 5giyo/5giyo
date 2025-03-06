@@ -102,7 +102,7 @@ public class ReviewService {
 
     public ResponseDto<PagingReviewResponseDto> getReview(Long storeId, Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
-        Page<Review> reviewPage = reviewRepository.findAllByStore_StoreIdOrderByModifiedAtDesc(storeId, pageRequest);
+        Page<Review> reviewPage = reviewRepository.findAllByStoreIdOrderByModifiedAtDesc(storeId, pageRequest);
 
         List<GetReviewResponseDto> reviews = reviewPage.getContent().stream()
                 .map(review -> {
