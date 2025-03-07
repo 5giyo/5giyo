@@ -195,4 +195,5 @@ class MenuServiceImplTest {
 
         verify(menuRepository, times(1)).findWithStoreAndOwnerById(menuId);
     }
+    // 테스트 끝
 }
