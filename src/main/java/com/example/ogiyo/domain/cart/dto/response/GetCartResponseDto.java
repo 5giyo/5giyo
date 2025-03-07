@@ -5,12 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
 public class GetCartResponseDto {
-    private final List<GetCartItemResponseDto> items;
+    private final Map<Long, Integer> items; // 메뉴 ID와 수량을 직접 저장
     private final int totalQuantity;
-
-
 }

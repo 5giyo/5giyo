@@ -8,6 +8,6 @@ import java.math.BigDecimal;
 @Getter
 @RequiredArgsConstructor
 public class UpdateCartResponseDto {
-    private final Long cartId;
+    private final Long menuId;
     private final int quantity;
 }

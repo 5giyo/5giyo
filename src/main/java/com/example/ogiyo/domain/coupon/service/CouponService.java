@@ -16,7 +16,7 @@ public interface CouponService {
 
     ResponseDto<List<Coupon>> findAllCoupons();
 
-    ResponseDto<UpdateCouponResponseDto> updateCoupon(Long couponid, UpdateCouponRequestDto dto);
+    ResponseDto<UpdateCouponResponseDto> updateCoupon(Long couponId, UpdateCouponRequestDto dto);
 
     ResponseDto<String> deleteCoupon(Long orderId);
 

@@ -12,4 +12,12 @@ public class UpdateCouponRequestDto {
     private BigDecimal maxDiscountPrice;
     private BigDecimal minDeliveryPrice;
     private String status;
+
+    //디 맥 민
+    public UpdateCouponRequestDto(BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice, String status) {
+        this.discountPrice = discountPrice;
+        this.maxDiscountPrice = maxDiscountPrice;
+        this.minDeliveryPrice = minDeliveryPrice;
+        this.status = status;
+    }
 }

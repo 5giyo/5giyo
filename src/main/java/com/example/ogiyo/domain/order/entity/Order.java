@@ -14,7 +14,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@Builder
 @AllArgsConstructor
 public class Order extends BaseEntity {
     @Id
@@ -40,6 +39,14 @@ public class Order extends BaseEntity {
 
     public Order() {
 
+    }
+
+    @Builder
+    public Order(Long orderId, String paymentMethod, BigDecimal totalPrice, OrderStatus orderStatus) {
+        this.orderId = orderId;
+        this.paymentMethod = paymentMethod;
+        this.totalPrice = totalPrice;
+        this.orderStatus = orderStatus;
     }
 
     public void updateOrder(OrderStatus orderStatus) {
