@@ -1,5 +1,6 @@
 package com.example.ogiyo.domain.member.service;
 
+import com.example.ogiyo.common.exception.DuplicateEmailException;
 import com.example.ogiyo.common.exception.InvalidPasswordException;
 import com.example.ogiyo.domain.member.dto.request.DeleteMemberRequestDto;
 import com.example.ogiyo.domain.member.dto.request.UpdateMemberRequestDto;
@@ -40,6 +41,10 @@ public class MemberService {
 
         if(!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new InvalidPasswordException();
+        }
+
+        if(existsByEmail(dto.getEmail())) {
+            throw new DuplicateEmailException();
         }
 
         if(dto.getName() != null && !dto.getName().isBlank()) {

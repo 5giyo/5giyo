@@ -23,7 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public SignUpMemberResponseDto signUp(String email, String password, MemberRole role) {
+    public SignUpMemberResponseDto signUp(String name, String email, String password, MemberRole role) {
         if(memberService.existsByEmail(email)){
             throw new DuplicateEmailException();
         }
@@ -31,6 +31,7 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(password);
 
         Member member = Member.builder()
+                .name(name)
                 .email(email)
                 .password(encodedPassword)
                 .role(role)
