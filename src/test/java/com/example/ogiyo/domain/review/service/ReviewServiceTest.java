@@ -9,11 +9,14 @@ import com.example.ogiyo.domain.member.service.MemberService;
 import com.example.ogiyo.domain.order.entity.Order;
 import com.example.ogiyo.domain.order.entity.OrderStatus;
 import com.example.ogiyo.domain.order.service.OrderServiceImpl;
+import com.example.ogiyo.domain.photo.domainType.DomainType;
+import com.example.ogiyo.domain.photo.repository.PhotoRepository;
 import com.example.ogiyo.domain.photo.service.PhotoService;
 import com.example.ogiyo.domain.review.dto.request.SaveReviewRequestDto;
 import com.example.ogiyo.domain.review.dto.request.UpdateReviewRequestDto;
 import com.example.ogiyo.domain.review.dto.response.PagingReviewResponseDto;
 import com.example.ogiyo.domain.review.dto.response.SaveReviewResponseDto;
+import com.example.ogiyo.domain.review.dto.response.UpdateReviewResponseDto;
 import com.example.ogiyo.domain.review.entity.Review;
 import com.example.ogiyo.domain.review.repository.ReviewRepository;
 import com.example.ogiyo.domain.store.entity.Store;
@@ -40,7 +43,7 @@ import static org.mockito.Mockito.*;
 public class ReviewServiceTest {
     @InjectMocks
     ReviewService reviewService;
-    @Mock // 의존성을 Mock으로 대체
+    @Mock
     private ReviewRepository reviewRepository;
     @Mock
     private StoreService storeService;
@@ -49,11 +52,11 @@ public class ReviewServiceTest {
     @Mock
     private OrderServiceImpl orderService;
     @Mock
-    private PhotoService photoService;
-    @Mock
     private JwtUtil jwtUtil;
     @Mock
     private S3Manager s3Manager;
+    @Mock
+    private PhotoService photoService;
 
     private Member member;
     private Order order;
@@ -76,7 +79,7 @@ public class ReviewServiceTest {
             Long storeId = 1L;
             String token = "validToken";
 
-            /*Order order = new Order(OrderStatus.PREPARING);*/
+            order.updateOrder(OrderStatus.PREPARING);
             SaveReviewRequestDto reviewRequestDto = new SaveReviewRequestDto(1L, (byte) 5, "완전 맛집!");
 
             when(jwtUtil.extractMemberId(token)).thenReturn(1L);
@@ -210,11 +213,15 @@ public class ReviewServiceTest {
             Byte minRating = 1;
             Byte maxRating = 5;
             PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
-            Page<Review> reviewPage = new PageImpl<>(Collections.emptyList(), pageRequest, 1);
+            Review review = mock(Review.class);
+            when(review.getCeoReview()).thenReturn(null);
+            when(review.getMember()).thenReturn(mock(Member.class));
+
+            List<Review> reviewList = List.of(review);
+            Page<Review> reviewPage = new PageImpl<>(reviewList, pageRequest, reviewList.size());
 
             when(reviewRepository.findAllByStoreIdAndRatingBetweenOrderByModifiedAtDesc(any(), any(), any(), any())).thenReturn(reviewPage);
             when(photoService.findByDomainTypeAndDomainKey(any(), any())).thenReturn(Collections.emptyList());
-            when(review.getCeoReview()).thenReturn(null);
 
             //when
             ResponseDto<PagingReviewResponseDto> response = reviewService.getReview(storeId, pageNumber, pageSize, minRating, maxRating);
@@ -234,7 +241,11 @@ public class ReviewServiceTest {
             Byte minRating = 1;
             Byte maxRating = 5;
             PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
-            Page<Review> reviewPage = new PageImpl<>(Collections.emptyList(), pageRequest, 1);
+            Review review = mock(Review.class);
+            when(review.getMember()).thenReturn(mock(Member.class));
+
+            List<Review> reviewList = List.of(review);
+            Page<Review> reviewPage = new PageImpl<>(reviewList, pageRequest, reviewList.size());
 
             when(reviewRepository.findAllByStoreIdAndRatingBetweenOrderByModifiedAtDesc(any(), any(), any(), any())).thenReturn(reviewPage);
             when(photoService.findByDomainTypeAndDomainKey(any(), any())).thenReturn(Collections.emptyList());
@@ -259,7 +270,7 @@ public class ReviewServiceTest {
         void 수정하려는_리뷰를_찾을_수_없을_때(){
             //given
             Long reviewId = 1L;
-            UpdateReviewRequestDto requestDto = new UpdateReviewRequestDto((byte) 5, "Updated content");
+            UpdateReviewRequestDto requestDto = new UpdateReviewRequestDto((byte) 5, "수정된 리뷰입니다.");
             when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
             //when
@@ -274,10 +285,9 @@ public class ReviewServiceTest {
             //given
             Long reviewId = 1L;
             Long memberId = 1L;
-            Long otherMemberId = 2L;
             Member otherMember = new Member();
             review = new Review(null, otherMember, null, (byte) 5, "기존 리뷰입니다.");
-            UpdateReviewRequestDto requestDto = new UpdateReviewRequestDto((byte) 5, "Updated content");
+            UpdateReviewRequestDto requestDto = new UpdateReviewRequestDto((byte) 5, "수정된 리뷰입니다.");
 
             when(jwtUtil.extractMemberId(any())).thenReturn(memberId);
             when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
@@ -285,11 +295,106 @@ public class ReviewServiceTest {
             //then
             assertThrows(IllegalArgumentException.class, () ->
                     reviewService.updateReview(reviewId, "validToken", requestDto));
+        }
 
+        @Test
+        void 리뷰_정상_수정() {
+            // given
+            Long reviewId = 1L;
+            Long memberId = 1L;
+            String token = "validToken";
+            UpdateReviewRequestDto requestDto = new UpdateReviewRequestDto((byte) 5, "수정된 리뷰입니다.");
+
+            Member mockMember = mock(Member.class);
+            when(mockMember.getId()).thenReturn(memberId);
+
+            Review mockReview = mock(Review.class);
+            when(mockReview.getMember()).thenReturn(mockMember);
+            when(mockReview.getRating()).thenReturn((byte) 5);
+            when(mockReview.getContent()).thenReturn("수정된 리뷰입니다.");
+
+
+            when(jwtUtil.extractMemberId(token)).thenReturn(memberId);
+            when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+
+            // when
+            ResponseDto<UpdateReviewResponseDto> response = reviewService.updateReview(reviewId, token, requestDto);
+
+            // then
+            assertNotNull(response);
+            assertTrue(response.getSuccess());
+            assertEquals(requestDto.getRating(), response.getData().getRating());
+            assertEquals(requestDto.getContent(), response.getData().getContent());
         }
     }
 
+    @Nested
+    class 리뷰삭제{
+        @Test
+        void 삭제하려는_리뷰를_찾을_수_없을_때(){
+            //given
+            Long reviewId = 1L;
 
+            when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
 
+            //when & then
+            assertThrows(IllegalArgumentException.class, () ->
+                    reviewService.deleteReview(reviewId, "validToken"));
+        }
+        @Test
+        void 작성된_리뷰와_삭제_요청자가_다를_떼(){
+            //given
+            Long reviewId = 1L;
+            Long memberId = 1L;
+            Long otherMemberId = 2L;
+            String token = "validToken";
 
+            Member otherMember = mock(Member.class);
+            when(otherMember.getId()).thenReturn(otherMemberId);
+
+            Review mockReview = mock(Review.class);
+            when(mockReview.getMember()).thenReturn(otherMember);
+
+            when(jwtUtil.extractMemberId(token)).thenReturn(memberId);
+            when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+
+            //when & then
+            assertThrows(IllegalArgumentException.class, () ->
+                    reviewService.deleteReview(reviewId, token));
+            //실제로 삭제 메서드가 호출되지 않았는지 확인.
+            verify(reviewRepository, never()).deleteById(any());
+            verify(photoService, never()).deleteByDomainTypeAndDomainKey(any(), any());
+        }
+
+        @Test
+        void 리뷰사진이_없을_때_정상삭제(){
+            //given
+            Long reviewId = 1L;
+            Long memberId = 1L;
+            String token = "validToken";
+
+            Member mockMember = mock(Member.class);
+            when(mockMember.getId()).thenReturn(memberId);
+
+            Review mockReview = mock(Review.class);
+            when(mockReview.getMember()).thenReturn(mockMember);
+            when(mockReview.getId()).thenReturn(reviewId);
+
+            when(jwtUtil.extractMemberId(token)).thenReturn(memberId);
+            when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(mockReview));
+
+            //when
+            ResponseDto<String> response = reviewService.deleteReview(reviewId, token);
+
+            //then
+            assertNotNull(response);
+            assertTrue(response.getSuccess());
+            assertEquals("리뷰를 삭제하였습니다.", response.getData());
+
+            //photoService의 삭제메서드 1회, S3 삭제 메서드 0회, reviewRepository삭제메서드 1회
+            verify(photoService, times(1)).deleteByDomainTypeAndDomainKey(DomainType.REVIEW, reviewId);
+            verify(s3Manager, times(0)).deleteFile(any());
+            verify(reviewRepository, times(1)).deleteById(reviewId);
+        }
+    }
 }

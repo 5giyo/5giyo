@@ -154,7 +154,7 @@ public class ReviewService {
         Long memberId = jwtUtil.extractMemberId(token);
 
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(()-> new IllegalArgumentException("수정하려는 리뷰를 찾을 수 없습니다."));
+                .orElseThrow(()-> new IllegalArgumentException("삭제하려는 리뷰를 찾을 수 없습니다."));
 
         if(!memberId.equals(review.getMember().getId())) {
             throw new IllegalArgumentException("리뷰 작성자만 삭제할 수 있습니다.");
