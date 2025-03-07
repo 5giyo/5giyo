@@ -1,51 +1,49 @@
 package com.example.ogiyo.domain.coupon.entity;
 
+import com.example.ogiyo.common.entity.BaseEntity;
 import com.example.ogiyo.domain.coupon.dto.request.UpdateCouponRequestDto;
 import com.example.ogiyo.domain.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Entity
-@Table(name = "coupons")
-public class Coupon {
+public class Coupon extends BaseEntity {
+
+    //정액할인 쿠폰만 구현하기
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long couponId;
     private String couponCode;
-    private int discountRate;
-    private int discountAmount;
-    private int maxDiscountPrice;
-    private int minDeliveryPrice;
+    private BigDecimal discountPrice;
+    private BigDecimal maxDiscountPrice;
+    private BigDecimal minDeliveryPrice;
     private String status;
-
-    @Enumerated(EnumType.STRING)
-    private CouponType couponType;
-
 
     @ManyToOne
     private Member member;
 
-
-    public Coupon(String couponCode, CouponType couponType, String status, int discountRate, int maxDiscountPrice, int discountAmount) {
+    @Builder
+    public Coupon(Long couponId,String couponCode, BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice,String status) {
+        this.couponId = couponId;
         this.couponCode = couponCode;
-        this.discountRate = discountRate;
-        this.discountAmount = discountAmount;
+        this.discountPrice = discountPrice;
         this.maxDiscountPrice = maxDiscountPrice;
+        this.minDeliveryPrice = minDeliveryPrice;
         this.status = status;
-        this.couponType = couponType;
     }
 
     public Coupon() {
 
     }
 
-
     public void update(UpdateCouponRequestDto dto) {
-        this.discountAmount = discountAmount;
-        this.maxDiscountPrice = maxDiscountPrice;
-        this.minDeliveryPrice = minDeliveryPrice;
-        this.couponType = couponType;
-
+        this.discountPrice = dto.getDiscountPrice();
+        this.maxDiscountPrice = dto.getMaxDiscountPrice();
+        this.minDeliveryPrice = dto.getMinDeliveryPrice();
+        this.status = dto.getStatus();
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SaveReviewRequestDto {
     @NotNull
     private Long orderId;

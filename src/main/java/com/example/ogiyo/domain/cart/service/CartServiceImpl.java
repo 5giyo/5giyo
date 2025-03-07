@@ -8,13 +8,11 @@ import com.example.ogiyo.domain.cart.dto.response.AddCartResponseDto;
 import com.example.ogiyo.domain.cart.dto.response.GetCartResponseDto;
 import com.example.ogiyo.domain.cart.dto.response.UpdateCartResponseDto;
 import com.example.ogiyo.domain.cart.entity.Cart;
-import com.example.ogiyo.domain.cart.entity.CartItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -24,54 +22,46 @@ public class CartServiceImpl implements CartService {
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, Cart> redisTemplate;
 
-
+    //장바구니 추가
     @Override
-    public ResponseDto<AddCartResponseDto> addCart(String Token,
-                                                   AddCartRequestDto addCartRequestDto) {
-        Long memberId = jwtUtil.extractMemberId(Token);
+    @Transactional
+    public ResponseDto<AddCartResponseDto> addCart(String token, AddCartRequestDto addCartRequestDto) {
+        Long memberId = jwtUtil.extractMemberId(token);
         String redisKey = "cart:" + memberId;
 
-        //레디스에서 장바구니 정보 조회. 없으면 새로 생성
         Cart cart = redisTemplate.opsForValue().get(redisKey);
         if (cart == null) {
             cart = new Cart(memberId);
         }
 
+        cart.addItem(addCartRequestDto.getMenuId(), addCartRequestDto.getQuantity());
 
-        //새 CartItem 생성 및 추가
-        CartItem newItem = new CartItem(
-                addCartRequestDto.getMenuId(),
-                addCartRequestDto.getQuantity()
-        );
-        cart.addItem(newItem);
+        redisTemplate.opsForValue().set(redisKey, cart, 24, TimeUnit.HOURS);
 
-        //수정된 장바구니를 Redis에 저장
-        redisTemplate.opsForValue().set(redisKey, cart,24, TimeUnit.HOURS);
-
-        //응답 DTO 생성
         AddCartResponseDto responseDto = new AddCartResponseDto(
-                new ArrayList<>(cart.getItems().values()),
+                cart.getItems(),
                 cart.getTotalQuantity()
         );
+
         return ResponseDto.success(responseDto);
     }
 
     @Override
-    public ResponseDto<UpdateCartResponseDto> updateCart(String token,
-                                                         UpdateCartRequestDto updateCartRequestDto) {
+    @Transactional
+    public ResponseDto<UpdateCartResponseDto> updateCart(String token, Long cartId, UpdateCartRequestDto updateCartRequestDto) {
+
         Long memberId = jwtUtil.extractMemberId(token);
         String redisKey = "cart:" + memberId;
 
-        // 레디스에서 장바구니 정보 조회
         Cart cart = redisTemplate.opsForValue().get(redisKey);
         if (cart == null) {
-            throw new IllegalArgumentException("장바구니가 조회되지 않습니다.");
+            throw new IllegalArgumentException("장바구니가 존재하지 않습니다.");
         }
-        // 해당 아이템의 수량 업데이트
-        cart.updateItemQuantity(updateCartRequestDto.getMenuId(), updateCartRequestDto.getQuantity());
-        redisTemplate.opsForValue().set(redisKey, cart,24, TimeUnit.HOURS);
 
-        // 응답 DTO 생성
+        cart.updateItemQuantity(updateCartRequestDto.getMenuId(), updateCartRequestDto.getQuantity());
+
+        redisTemplate.opsForValue().set(redisKey, cart, 24, TimeUnit.HOURS);
+
         UpdateCartResponseDto responseDto = new UpdateCartResponseDto(
                 updateCartRequestDto.getMenuId(),
                 updateCartRequestDto.getQuantity()
@@ -81,28 +71,29 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDto<GetCartResponseDto> getCart(Long cartId) {
         String redisKey = "cart:" + cartId;
 
-        // 레디스에서 장바구니 정보 조회
         Cart cart = redisTemplate.opsForValue().get(redisKey);
         if (cart == null) {
             throw new IllegalArgumentException("장바구니가 조회되지 않습니다.");
         }
 
+        // GetCartResponseDto 생성 (Map<Long, Integer>와 총 수량 전달)
         GetCartResponseDto responseDto = new GetCartResponseDto(
-                new ArrayList<>(cart.getItems().values()),
-                cart.getTotalQuantity()
+                cart.getItems(), // Map<Long, Integer> 그대로 전달
+                cart.getTotalQuantity() // 총 수량 계산
         );
+
         return ResponseDto.success(responseDto);
     }
 
     @Override
+    @Transactional
     public ResponseDto<String> deleteCard(Long cartId) {
-        String rediskey = "cart:" + cartId;
-        redisTemplate.delete(rediskey);
+        String redisKey = "cart:" + cartId;
+        redisTemplate.opsForValue().getAndDelete(redisKey);
         return ResponseDto.success("장바구니를 삭제하였습니다.");
     }
-
-
 }

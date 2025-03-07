@@ -3,6 +3,8 @@ package com.example.ogiyo.domain.store.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class GetStoreResponseDto {
@@ -14,5 +16,6 @@ public class GetStoreResponseDto {
     private Long minPrice;
     private String imageUrl;
     private String status;
-//    private List<Menu> menus;
+    private List<String> menus;
+
 }

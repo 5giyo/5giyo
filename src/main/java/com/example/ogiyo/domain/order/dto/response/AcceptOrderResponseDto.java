@@ -11,5 +11,4 @@ import java.time.LocalDateTime;
 public class AcceptOrderResponseDto {
     private final Long orderId;
     private final OrderStatus orderStatus;
-    private LocalDateTime orderDate;
 }

@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class AddCartRequestDto {
-    private long menuId;
-    @NotNull
+    private Long menuId;
     private int quantity;
+
+    public AddCartRequestDto(Long menuId, int quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
 }

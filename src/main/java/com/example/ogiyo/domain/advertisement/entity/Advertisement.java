@@ -26,10 +26,18 @@ public class Advertisement {
     private LocalDateTime endedAt;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @OneToOne
+    @JoinColumn(name = "store_id", unique = true)
     private Store store;
+
+    public void updateAdvertisement(LocalDateTime startedAt, LocalDateTime endedAt, Status status) {
+        this.startedAt = startedAt;
+        this.endedAt = endedAt;
+        this.status = status;
+    }
 
     public void updateStatus(Status status) {
         this.status = status;

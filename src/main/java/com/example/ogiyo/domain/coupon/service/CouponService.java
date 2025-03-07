@@ -6,6 +6,7 @@ import com.example.ogiyo.domain.coupon.dto.request.CreateCouponRequestDto;
 import com.example.ogiyo.domain.coupon.dto.response.CreateCouponResponseDto;
 import com.example.ogiyo.domain.coupon.dto.response.GetCouponResponseDto;
 import com.example.ogiyo.domain.coupon.dto.response.UpdateCouponResponseDto;
+import com.example.ogiyo.domain.coupon.entity.Coupon;
 
 import java.util.List;
 
@@ -13,11 +14,13 @@ public interface CouponService {
 
     ResponseDto<CreateCouponResponseDto> createCoupon(CreateCouponRequestDto createCouponRequestDto);
 
-    ResponseDto<List<GetCouponResponseDto>> findAllCoupons(Long userId);
+    ResponseDto<List<Coupon>> findAllCoupons();
 
-    ResponseDto<GetCouponResponseDto> findOrderById(Long couponId);
-
-    ResponseDto<UpdateCouponResponseDto> updateCoupon(Long couponid, UpdateCouponRequestDto dto);
+    ResponseDto<UpdateCouponResponseDto> updateCoupon(Long couponId, UpdateCouponRequestDto dto);
 
     ResponseDto<String> deleteCoupon(Long orderId);
+
+    ResponseDto<GetCouponResponseDto> getCoupon(Long couponId);
+
+
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
-    @Query("SELECT COALESCE(MAX(p.seq), 0) FROM Photo p WHERE p.domainKey = :domainKey")
+    @Query("SELECT COALESCE(MAX(p.imageSeq), 0) FROM Photo p WHERE p.domainKey = :domainKey")
     int findMaxSeqByDomainKey(@Param("domainKey") Long domainKey);
 
     void deleteByDomainTypeAndDomainKey(DomainType domainType, Long domainKey);

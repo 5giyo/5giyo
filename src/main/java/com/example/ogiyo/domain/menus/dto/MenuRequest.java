@@ -15,8 +15,5 @@ public class MenuRequest {
     private String menuName;
     private int price;
     private Status status;
-
-    public String getOption() {
-        return null;
-    }
+    private String menuOption;
 }
