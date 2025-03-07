@@ -49,6 +49,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public ResponseDto<UpdateCartResponseDto> updateCart(String token, Long cartId, UpdateCartRequestDto updateCartRequestDto) {
+
         Long memberId = jwtUtil.extractMemberId(token);
         String redisKey = "cart:" + memberId;
 
