@@ -48,17 +48,16 @@ public class ReviewService {
     public ResponseDto<SaveReviewResponseDto> saveReview(Long storeId, String token, SaveReviewRequestDto reviewRequestDto, List<MultipartFile> photos) {
         Long memberId = jwtUtil.extractMemberId(token);
 
-        Order order = orderService.findOrder(reviewRequestDto.getOrderId());
+/*        Order order = orderService.findOrder(reviewRequestDto.getOrderId());
         OrderStatus orderStatus = order.getOrderStatus();
         if(!OrderStatus.DELIVERED.equals(orderStatus)) {
             throw new InvalidRequestStateException("배달 완료된 주문만 리뷰를 작성할 수 있습니다.");
-        }
+        }*/
         Member member = memberService.findById(memberId).orElseThrow(()-> new EntityNotFoundException("회원을 찾지 못했습니다."));
 
         Review review = new Review(
                 storeService.findStore(storeId),
                 member,
-                order,
                 reviewRequestDto.getRating(),
                 reviewRequestDto.getContent()
         );

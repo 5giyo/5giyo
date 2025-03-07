@@ -14,6 +14,9 @@ public class CeoReview {
     @Id
     private Long reviewId;
 
+    @Version // 추가: 낙관적 락 적용
+    private Integer version;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "reviewId", nullable = false)

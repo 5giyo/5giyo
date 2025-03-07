@@ -1,5 +1,6 @@
 package com.example.ogiyo.domain.review.dto.request;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveReviewRequestDto {
-    @NotNull
+    @Nullable
     private Long orderId;
 
     @NotNull

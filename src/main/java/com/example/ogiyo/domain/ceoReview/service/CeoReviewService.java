@@ -29,9 +29,9 @@ public class CeoReviewService {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public ResponseDto<SaveCeoReviewResponseDto> saveCeoReview(Long reviewId, String token, SaveCeoReviewRequestDto requestDto) {
         Review review = reviewService.getReviewById(reviewId);
-
         Store store = storeService.findStore(review.getStore().getId());
         Long memberId = jwtUtil.extractMemberId(token);
 
@@ -39,9 +39,15 @@ public class CeoReviewService {
             throw new InvalidRequestStateException("해당 가게의 사장이 아닙니다.");
         }
         Member member = memberService.findById(memberId).orElseThrow(()-> new EntityNotFoundException("회원을 찾을 수 없습니다."));
+        CeoReview existingCeoReview = ceoReviewRepository.findById(reviewId).orElse(null);
 
-        CeoReview ceoReview = new CeoReview(review, member, requestDto.getContent());
-        CeoReview savedCeoReview = ceoReviewRepository.save(ceoReview);
+        if (existingCeoReview != null) {
+            existingCeoReview.updateCeoReview(requestDto.getContent()); // 기존 리뷰 업데이트
+        } else {
+            existingCeoReview = new CeoReview(review, member, requestDto.getContent()); // 새 리뷰 저장
+        }
+        CeoReview savedCeoReview = ceoReviewRepository.save(existingCeoReview);
+
 
         SaveCeoReviewResponseDto response = new SaveCeoReviewResponseDto(
                 savedCeoReview.getContent()

@@ -1,8 +1,11 @@
 package com.example.ogiyo.domain.cart.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
@@ -10,11 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 @Getter
 @RedisHash("cart")
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Cart implements Serializable {
 
     @Id
-    private final Long memberId;
-    private final Map<Long, Integer> items; // menuId를 키로, 수량을 값으로 저장
+    private Long memberId;
+    private Map<Long, Integer> items; // menuId를 키로, 수량을 값으로 저장
 
     public Cart(Long memberId) {
         this.memberId = memberId;
@@ -29,6 +34,7 @@ public class Cart implements Serializable {
         items.remove(menuId);
     }
 
+    @JsonProperty("totalQuantity")
     public int getTotalQuantity() {
         return items.values().stream().mapToInt(Integer::intValue).sum();
     }
