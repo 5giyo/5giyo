@@ -23,7 +23,6 @@ import java.util.List;
 public class StoreService {
     private final StoreRepository storeRepository;
     private final MemberService memberService;
-//    private final MenuService menuService; //추후 추가
 
     public List<GetStoresResponseDto> findStores(String storeName) {
 
@@ -138,21 +137,5 @@ public class StoreService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "사장님이 아닙니다.");
         }
         return savedMember;
-    }
-
-    // Menu 도메인에서 Store 에 Menu 를 추가하는 메서드
-    public void addMenu(Long ownerId, Long storeId, Menu menu) {
-        Store savedStore = findByStoreWithOwnerId(ownerId, storeId);
-
-        savedStore.addMenu(menu);
-        storeRepository.save(savedStore);
-    }
-
-    // Menu 도메인에서 Store 에 Menu 를 제거하는 메서드
-    public void removeMenu(Long ownerId, Long storeId, Menu menu) {
-        Store savedStore = findByStoreWithOwnerId(ownerId, storeId);
-
-        savedStore.removeMenu(menu);
-        storeRepository.save(savedStore);
     }
 }
