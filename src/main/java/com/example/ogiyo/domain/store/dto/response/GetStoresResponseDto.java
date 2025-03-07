@@ -9,7 +9,6 @@ import lombok.Getter;
 public class GetStoresResponseDto {
     private Long storeId;
     private String storeName;
-    //    private String tip;
     private Long minPrice;
     private String imageUrl;
     private String status;
