@@ -59,6 +59,7 @@ public class AuthServiceTest {
         //then
         assertNotNull(response);
         assertEquals(memberId, response.getId());
+        assertEquals(name, response.getName());
         assertEquals(email, response.getEmail());
         assertEquals(role, response.getRole());
     }
@@ -99,6 +100,7 @@ public class AuthServiceTest {
         // then
         assertNotNull(response);
         assertEquals(memberId, response.getId());
+        assertEquals(name, response.getName());
         assertEquals(email, response.getEmail());
         assertEquals(role, response.getRole());
     }

@@ -41,6 +41,7 @@ public class AuthService {
 
         return SignUpMemberResponseDto.builder()
                 .id(savedMember.getId())
+                .name(savedMember.getName())
                 .email(savedMember.getEmail())
                 .createdAt(savedMember.getCreatedAt())
                 .role(role)
@@ -57,6 +58,7 @@ public class AuthService {
 
         return LoginMemberResponseDto.builder()
                 .id(member.getId())
+                .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
                 .build();
