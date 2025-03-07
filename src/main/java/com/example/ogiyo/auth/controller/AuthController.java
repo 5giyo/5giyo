@@ -27,6 +27,7 @@ public class AuthController {
             @Validated @RequestBody SignUpMemberRequestDto requestDto
     ) {
         SignUpMemberResponseDto responseDto = authService.signUp(
+                requestDto.getName(),
                 requestDto.getEmail(),
                 requestDto.getPassword(),
                 requestDto.getRole()

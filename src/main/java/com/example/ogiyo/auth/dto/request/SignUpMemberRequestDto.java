@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 public class SignUpMemberRequestDto {
 
     @NotNull
+    private final String name;
+
+    @NotNull
     @Email
     @Pattern(regexp = Const.EMAIL_REGEX)
     @Size(min = 8, max = 100)

@@ -54,11 +54,12 @@ public class AuthServiceTest {
         doReturn(member).when(memberService).saveMember(any(Member.class));
 
         //when
-        SignUpMemberResponseDto response = authService.signUp(email, password, role);
+        SignUpMemberResponseDto response = authService.signUp(name, email, password, role);
 
         //then
         assertNotNull(response);
         assertEquals(memberId, response.getId());
+        assertEquals(name, response.getName());
         assertEquals(email, response.getEmail());
         assertEquals(role, response.getRole());
     }
@@ -66,6 +67,7 @@ public class AuthServiceTest {
     @Test
     void 중복된_이메일로_회원가입시_Exception을_던진다() {
         // given
+        String name = "test";
         String email = "duplicate@gmail.com";
         String password = "password";
         MemberRole role = MemberRole.GENERAL;
@@ -73,7 +75,7 @@ public class AuthServiceTest {
         given(memberService.existsByEmail(email)).willReturn(true);
 
         // when & then
-        assertThrows(DuplicateEmailException.class, () -> authService.signUp(email, password, role));
+        assertThrows(DuplicateEmailException.class, () -> authService.signUp(name, email, password, role));
     }
 
     @Test
@@ -98,6 +100,7 @@ public class AuthServiceTest {
         // then
         assertNotNull(response);
         assertEquals(memberId, response.getId());
+        assertEquals(name, response.getName());
         assertEquals(email, response.getEmail());
         assertEquals(role, response.getRole());
     }
