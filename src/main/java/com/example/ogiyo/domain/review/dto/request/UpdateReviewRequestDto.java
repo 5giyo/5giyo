@@ -1,11 +1,13 @@
 package com.example.ogiyo.domain.review.dto.request;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UpdateReviewRequestDto {
     @NotNull
     @Min(value = 1, message = "별점은 최소 1점 이상이어야 합니다.")

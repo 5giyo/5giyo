@@ -55,18 +55,6 @@ public class Store{
         this.status = status;
     }
 
-    public void addMenu(Menu menu) {
-        if (!menus.contains(menu)) {
-            this.menus.add(menu);
-        }
-    }
-
-    public void removeMenu(Menu menu) {
-        if (menus.contains(menu)) {
-            this.menus.remove(menu);
-        }
-    }
-
     public enum Status {
         OPEN, CLOSED, PERMANENTLY_CLOSED
     }
