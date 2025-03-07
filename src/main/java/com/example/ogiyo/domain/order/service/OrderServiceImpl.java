@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
         //주문 생성
         Order newOrder = Order.builder()
-                .orderStatus(OrderStatus.REQUIRED)
+                .orderStatus(requireOrderRequestDto.getOrderStatus())
                 .paymentMethod(requireOrderRequestDto.getPaymentMethod())
                 .totalPrice(orderPrice)
                 .build();

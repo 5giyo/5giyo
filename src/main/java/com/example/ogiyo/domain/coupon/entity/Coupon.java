@@ -26,18 +26,14 @@ public class Coupon extends BaseEntity {
     @ManyToOne
     private Member member;
 
-    @Builder
-    public Coupon(Long couponId,String couponCode, BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice,String status) {
-        this.couponId = couponId;
+    public Coupon() {
+    }
+    public Coupon(String couponCode, BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice, String status) {
         this.couponCode = couponCode;
         this.discountPrice = discountPrice;
         this.maxDiscountPrice = maxDiscountPrice;
         this.minDeliveryPrice = minDeliveryPrice;
         this.status = status;
-    }
-
-    public Coupon() {
-
     }
 
     public void update(UpdateCouponRequestDto dto) {

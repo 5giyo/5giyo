@@ -27,9 +27,9 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+/*    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private Order order;
+    private Order order;*/
 
     @OneToOne(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private CeoReview ceoReview;
@@ -41,10 +41,9 @@ public class Review extends BaseEntity {
     @Size(min = 5, max = 255)
     private String content;
 
-    public Review(Store store, Member member, Order order, Byte rating, String content){
+    public Review(Store store, Member member, Byte rating, String content){
         this.store = store;
         this.member = member;
-        this.order = order;
         this.rating = rating;
         this.content = content;
     }

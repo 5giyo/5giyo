@@ -26,15 +26,20 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public ResponseDto<CreateCouponResponseDto> createCoupon(
             CreateCouponRequestDto createCouponRequestDto) {
+        System.out.println("엔티티 생성 전");
 
-        Coupon newCoupon = Coupon.builder()
-                .couponCode(createCouponRequestDto.getCouponCode())
-                .discountPrice(createCouponRequestDto.getDiscountPrice())
-                .maxDiscountPrice(createCouponRequestDto.getMaxDiscountPrice())
-                .minDeliveryPrice(createCouponRequestDto.getMinDeliveryPrice())
-                .build();
+        Coupon newCoupon = new Coupon(
+                createCouponRequestDto.getCouponCode(),
+                createCouponRequestDto.getDiscountPrice(),
+                createCouponRequestDto.getMaxDiscountPrice(),
+                createCouponRequestDto.getMinDeliveryPrice(),
+                createCouponRequestDto.getStatus()
+        );
+        System.out.println("엔티티 생성 후");
 
+        System.out.println("세이브 전");
         Coupon savedCoupon = couponRepository.save(newCoupon);
+        System.out.println("세이브 후");
 
         // 4. 응답 DTO 생성
         CreateCouponResponseDto responseDto = CreateCouponResponseDto.builder()
@@ -44,6 +49,7 @@ public class CouponServiceImpl implements CouponService {
                 .maxDiscountPrice(savedCoupon.getMaxDiscountPrice())
                 .minDeliveryPrice(savedCoupon.getMinDeliveryPrice())
                 .build();
+        System.out.println("디티오 생성 후");
 
         return ResponseDto.success(responseDto);
     }

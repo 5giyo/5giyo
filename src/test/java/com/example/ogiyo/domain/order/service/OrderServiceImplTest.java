@@ -70,7 +70,6 @@ class OrderServiceImplTest {
 
 
         Order savedOrder = Order.builder()
-                .orderId(1L)
                 .orderStatus(OrderStatus.REQUIRED)
                 .totalPrice(menuPrice.subtract(discountPrice))
                 .build();
