@@ -30,8 +30,10 @@ public class ReviewController {
     @GetMapping("/{storeId}/review")
     public ResponseEntity<ResponseDto<?>> getReview(@PathVariable Long storeId,
                                                     @RequestParam(defaultValue = "1") int pageNumber,
-                                                    @RequestParam(defaultValue = "10") int pageSize) {
-        return ResponseEntity.ok(reviewService.getReview(storeId, pageNumber, pageSize));
+                                                    @RequestParam(defaultValue = "10") int pageSize,
+                                                    @RequestParam(defaultValue = "1") Byte minRating,
+                                                    @RequestParam(defaultValue = "5") Byte maxRating) {
+        return ResponseEntity.ok(reviewService.getReview(storeId, pageNumber, pageSize, minRating, maxRating));
     }
 
 

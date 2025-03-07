@@ -1,10 +1,12 @@
 package com.example.ogiyo.domain.store.entity;
 
+import com.example.ogiyo.domain.member.entity.Member;
+import com.example.ogiyo.domain.menus.entity.Menu;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Store{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long storeId;
+    private Long id;
 
     @Column(nullable = false)
     private String storeName;
@@ -35,12 +37,11 @@ public class Store{
     @Enumerated(EnumType.STRING)
     private Status status;
 
-//    @OneToOne
-//    User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    Member owner;
 
-//    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, orphanRemoval = true)
-//    List<Menu> menus = new ArrayList<>();
-
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE)
+    List<Menu> menus = new ArrayList<>();
 
     public void updateStore(String storeName, String operatingHours, String announcement, Long minPrice, String imageUrl) {
         this.storeName = storeName;
@@ -53,7 +54,6 @@ public class Store{
     public void changeStatus(Status status) {
         this.status = status;
     }
-
 
     public enum Status {
         OPEN, CLOSED, PERMANENTLY_CLOSED

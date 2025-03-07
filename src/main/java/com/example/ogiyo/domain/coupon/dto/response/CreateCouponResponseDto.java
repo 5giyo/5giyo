@@ -1,18 +1,19 @@
 package com.example.ogiyo.domain.coupon.dto.response;
 
-import com.example.ogiyo.domain.coupon.entity.CouponType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Getter
 @RequiredArgsConstructor
+@Builder
 public class CreateCouponResponseDto {
     private final long couponId;
     private final String couponCode;
-    private final String Status;
-    private final int MaxDiscountPrice;
-    private final int DiscountAmount;
-    private final int DiscountRate;
-    private CouponType couponType;
-
+    private final String status;
+    private final BigDecimal maxDiscountPrice;
+    private final BigDecimal discountPrice;
+    private final BigDecimal minDeliveryPrice;
 }

@@ -12,13 +12,16 @@ import java.util.List;
 public interface OrderService {
 
     //주문요청하기
-//    ResponseDto<RequireOrderResponseDto> requireOrder(String token, RequireOrderRequestDto requireOrderRequestDto);
+    ResponseDto<RequireOrderResponseDto> requestOrder(String token, RequireOrderRequestDto requireOrderRequestDto);
 
     //주문수락하기
     ResponseDto<AcceptOrderResponseDto> acceptOrder(Long orderId);
 
     //주문 거절하기
     ResponseDto<RejectOrderResponseDto> rejectOrder(Long orderId);
+
+
+    ResponseDto<CompleteOrderResponseDto> completeOrder(Long orderId);
 
     //주문 전체 조회
     ResponseDto<List<Order>> findAllOrders();

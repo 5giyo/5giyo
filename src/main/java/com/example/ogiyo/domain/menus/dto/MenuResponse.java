@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuResponse {
-    private String option;
+    private String menuOption;
     private Long menuId;
     private String storeName;
     private String category;
@@ -24,8 +24,8 @@ public class MenuResponse {
     private LocalDateTime modifiedAt;
 
     public MenuResponse(Menu menu) {
-        this.option = menu.getOption();
-        this.menuId = menu.getMenuId();
+        this.menuOption = menu.getMenuOption();
+        this.menuId = menu.getId();
         this.storeName = menu.getStore().getStoreName();
         this.category = menu.getCategory();
         this.menuName = menu.getMenuName();
