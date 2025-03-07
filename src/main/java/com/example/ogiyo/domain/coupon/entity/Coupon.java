@@ -16,26 +16,25 @@ public class Coupon extends BaseEntity {
     //정액할인 쿠폰만 구현하기
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long couponId;
     private String couponCode;
     private BigDecimal discountPrice;
     private BigDecimal maxDiscountPrice;
     private BigDecimal minDeliveryPrice;
-    private boolean isUsed;
+    private String status;
 
     @ManyToOne
     private Member member;
 
     @Builder
-    public Coupon(String couponCode, BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice, boolean isUsed) {
+    public Coupon(Long couponId,String couponCode, BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice,String status) {
+        this.couponId = couponId;
         this.couponCode = couponCode;
         this.discountPrice = discountPrice;
         this.maxDiscountPrice = maxDiscountPrice;
         this.minDeliveryPrice = minDeliveryPrice;
-        this.isUsed = isUsed;
+        this.status = status;
     }
-
-
 
     public Coupon() {
 
@@ -45,5 +44,6 @@ public class Coupon extends BaseEntity {
         this.discountPrice = dto.getDiscountPrice();
         this.maxDiscountPrice = dto.getMaxDiscountPrice();
         this.minDeliveryPrice = dto.getMinDeliveryPrice();
+        this.status = dto.getStatus();
     }
 }

@@ -2,6 +2,7 @@ package com.example.ogiyo.domain.order.service;
 
 
 import com.example.ogiyo.common.dto.ResponseDto;
+import com.example.ogiyo.common.exception.NotFoundOrderException;
 import com.example.ogiyo.common.util.JwtUtil;
 import com.example.ogiyo.domain.cart.dto.response.GetCartResponseDto;
 import com.example.ogiyo.domain.cart.service.CartServiceImpl;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -38,18 +40,27 @@ public class OrderServiceImpl implements OrderService {
     public ResponseDto<RequireOrderResponseDto> requestOrder(String token, RequireOrderRequestDto requireOrderRequestDto) {
         Long memberId = jwtUtil.extractMemberId(token);
 
+        // 장바구니 조회 (cartService.getCart에서 Map<Long, Integer> 반환)
         ResponseDto<GetCartResponseDto> cartResponse = cartService.getCart(memberId);
+        Map<Long, Integer> cartItems = cartResponse.getData().getItems();
 
-        BigDecimal getTotalPrice = new BigDecimal(0);
+        BigDecimal getTotalPrice = BigDecimal.ZERO;
 
-        for(int i =0; i < cartResponse.getData().getItems().size(); i++) {
-            Long menuId = cartResponse.getData().getItems().get(i).getMenuId();
+        // 장바구니 아이템을 순회하며 총 가격 계산
+        for (Map.Entry<Long, Integer> entry : cartItems.entrySet()) {
+            Long menuId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            // 메뉴 정보 조회
             Menu menu = menuRepository.findById(menuId)
-                    .orElseThrow(()-> new IllegalArgumentException("메뉴를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을 수 없습니다."));
             BigDecimal menuPrice = BigDecimal.valueOf(menu.getPrice());
-            getTotalPrice = getTotalPrice.add(menuPrice);
+
+            // 메뉴 가격 * 수량 계산 후 총 가격에 추가
+            getTotalPrice = getTotalPrice.add(menuPrice.multiply(BigDecimal.valueOf(quantity)));
         }
 
+        //쿠폰 할인 금액 계산
         BigDecimal discountPrice = getDiscountPriceFromCoupon(requireOrderRequestDto.getCouponCode());
 
         //주문전 총금액
@@ -83,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
     public ResponseDto<AcceptOrderResponseDto> acceptOrder(Long orderId) {
         Order order = orderRepository
                 .findById(orderId)
-                .orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
+                .orElseThrow(NotFoundOrderException::new);
 
         order.updateOrder(OrderStatus.PREPARING);
         AcceptOrderResponseDto acceptOrder = new AcceptOrderResponseDto(
@@ -100,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
     public ResponseDto<RejectOrderResponseDto> rejectOrder(Long orderId) {
         Order order = orderRepository
                 .findById(orderId)
-                .orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
+                .orElseThrow(NotFoundOrderException::new);
 
         order.updateOrder(OrderStatus.REJECTED);
         RejectOrderResponseDto rejectOrder = new RejectOrderResponseDto(
@@ -117,7 +128,7 @@ public class OrderServiceImpl implements OrderService {
     public ResponseDto<CompleteOrderResponseDto> completeOrder(Long orderId) {
         Order order = orderRepository
                 .findById(orderId)
-                .orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
+                .orElseThrow(NotFoundOrderException::new);
 
         order.updateOrder(OrderStatus.DELIVERED);
         CompleteOrderResponseDto completeOrder = new CompleteOrderResponseDto(
@@ -128,7 +139,6 @@ public class OrderServiceImpl implements OrderService {
         return ResponseDto.success(completeOrder);
     }
 
-
     //주문 취소하기(고객) //TODO: 유저롤 집어넣기.
     @Override
     @Transactional
@@ -136,7 +146,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(orderId);
         return ResponseDto.success("주문이 삭제되었습니다.");
     }
-
 
     //주문 전체 조회하기
     @Override
@@ -151,7 +160,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(readOnly = true)
     public ResponseDto<GetOrderResponseDto> findOrderById(Long orderId) {
         Order order = orderRepository
-                .findById(orderId).orElseThrow(()->new IllegalArgumentException("주문을 찾지 못했습니다."));
+                .findById(orderId)
+                .orElseThrow(NotFoundOrderException::new);
 
         GetOrderResponseDto getOrder = new GetOrderResponseDto(
                 order.getOrderId(),
@@ -160,17 +170,14 @@ public class OrderServiceImpl implements OrderService {
 
         return ResponseDto.success(getOrder);
     }
-
-
-
-
+    
     //주문 수정하기(주문상태 변경, 결제수단 변경,등)
     @Override
     @Transactional
     public ResponseDto<UpdateOrderResponseDto> updateOrder(Long orderId, OrderStatus orderStatus, String paymentMethod) {
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(()->new IllegalArgumentException("수정할 주문을 찾을 수 없습니다."));
+                .orElseThrow(NotFoundOrderException::new);
 
         order.update(orderStatus, paymentMethod);
 
@@ -183,7 +190,6 @@ public class OrderServiceImpl implements OrderService {
         return ResponseDto.success(responseDto);
     }
 
-    //
     private BigDecimal getDiscountPriceFromCoupon(String couponCode) {
         //쿠폰유효성 검사 및 할인금액 추출
         return couponService.findByCouponCode(couponCode).getDiscountPrice();

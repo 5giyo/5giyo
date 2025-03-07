@@ -33,7 +33,7 @@ public class CartController {
             @PathVariable Long cartId,
             @Valid @RequestBody UpdateCartRequestDto updateCartRequestDto
     ) {
-        return ResponseEntity.ok(cartServiceImpl.updateCart(token,cartId,updateCartRequestDto));
+        return ResponseEntity.ok(cartServiceImpl.updateCart(token, cartId , updateCartRequestDto));
     }
 
     //장바구니 조회

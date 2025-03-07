@@ -13,7 +13,7 @@ public interface CartService {
     ResponseDto<AddCartResponseDto> addCart(String token,AddCartRequestDto addCartRequestDto);
 
     ResponseDto<UpdateCartResponseDto> updateCart
-            (String token, Long cartId,UpdateCartRequestDto updateCartRequestDto);
+            (String token,Long cartId, UpdateCartRequestDto updateCartRequestDto);
 
     ResponseDto<GetCartResponseDto> getCart(Long cartId);
 

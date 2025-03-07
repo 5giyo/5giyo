@@ -1,9 +1,8 @@
 package com.example.ogiyo.domain.coupon.service;
 
 import com.example.ogiyo.common.dto.ResponseDto;
-import com.example.ogiyo.common.util.JwtUtil;
+import com.example.ogiyo.common.exception.NotFoundCouponException;
 import com.example.ogiyo.domain.coupon.dto.request.CreateCouponRequestDto;
-import com.example.ogiyo.domain.coupon.dto.request.GetCouponRequestDto;
 import com.example.ogiyo.domain.coupon.dto.request.UpdateCouponRequestDto;
 import com.example.ogiyo.domain.coupon.dto.response.CreateCouponResponseDto;
 import com.example.ogiyo.domain.coupon.dto.response.GetCouponResponseDto;
@@ -12,6 +11,7 @@ import com.example.ogiyo.domain.coupon.entity.Coupon;
 import com.example.ogiyo.domain.coupon.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +22,7 @@ public class CouponServiceImpl implements CouponService {
     private final CouponRepository couponRepository;
 
     //쿠폰생성하기
+    @Transactional
     @Override
     public ResponseDto<CreateCouponResponseDto> createCoupon(
             CreateCouponRequestDto createCouponRequestDto) {
@@ -37,7 +38,7 @@ public class CouponServiceImpl implements CouponService {
 
         // 4. 응답 DTO 생성
         CreateCouponResponseDto responseDto = CreateCouponResponseDto.builder()
-                .couponId(savedCoupon.getId())
+                .couponId(savedCoupon.getCouponId())
                 .couponCode(savedCoupon.getCouponCode())
                 .discountPrice(savedCoupon.getDiscountPrice())
                 .maxDiscountPrice(savedCoupon.getMaxDiscountPrice())
@@ -59,9 +60,9 @@ public class CouponServiceImpl implements CouponService {
     public ResponseDto<GetCouponResponseDto> getCoupon(Long couponId) {
         Coupon coupon = couponRepository
                 .findById(couponId)
-                .orElseThrow(()->new IllegalArgumentException("쿠폰을 조회할 수 없습니다."));
+                .orElseThrow(NotFoundCouponException::new);
         GetCouponResponseDto getCoupon = new GetCouponResponseDto(
-                coupon.getId(),
+                coupon.getCouponId(),
                 coupon.getCouponCode(),
                 coupon.getMaxDiscountPrice()
         );
@@ -70,19 +71,18 @@ public class CouponServiceImpl implements CouponService {
 
     //쿠폰수정하기(최소배달비,최대할인금액,할인금액,쿠폰상태)
     @Override
-    public ResponseDto<UpdateCouponResponseDto> updateCoupon(Long couponId,
-                                                             UpdateCouponRequestDto dto) {
-
+    @Transactional
+    public ResponseDto<UpdateCouponResponseDto> updateCoupon(Long couponId, UpdateCouponRequestDto dto) {
         Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(()->new IllegalArgumentException("해당 쿠폰을 조회할 수 없습니다."));
+                .orElseThrow(NotFoundCouponException::new);
 
         coupon.update(dto);
 
         UpdateCouponResponseDto updateCoupon = new UpdateCouponResponseDto(
-                dto.getMinDeliveryPrice(),
-                dto.getMaxDiscountPrice(),
-                dto.getDiscountPrice(),
-                dto.getStatus()
+                coupon.getDiscountPrice(),
+                coupon.getMaxDiscountPrice(),
+                coupon.getMinDeliveryPrice(),
+                coupon.getStatus()
         );
 
         return ResponseDto.success(updateCoupon);
@@ -90,6 +90,7 @@ public class CouponServiceImpl implements CouponService {
 
     //쿠폰삭제
     @Override
+    @Transactional
     public ResponseDto<String> deleteCoupon(Long couponId) {
         couponRepository.deleteById(couponId);
         return ResponseDto.success("쿠폰이 삭제되었습니다.");
@@ -98,7 +99,7 @@ public class CouponServiceImpl implements CouponService {
     //쿠폰코드 찾는 메서드
     public Coupon findByCouponCode(String couponCode) {
         return couponRepository.findByCouponCode(couponCode)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 쿠폰 코드입니다."));
+                .orElseThrow(NotFoundCouponException::new);
     }
 
 

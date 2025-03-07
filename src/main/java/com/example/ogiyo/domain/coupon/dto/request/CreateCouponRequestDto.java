@@ -13,4 +13,12 @@ public class CreateCouponRequestDto {
     private BigDecimal maxDiscountPrice;
     private BigDecimal minDeliveryPrice;
     private String status;
+
+    public CreateCouponRequestDto(String couponCode, BigDecimal discountPrice, BigDecimal maxDiscountPrice, BigDecimal minDeliveryPrice, String status) {
+        this.couponCode = couponCode;
+        this.discountPrice = discountPrice;
+        this.maxDiscountPrice = maxDiscountPrice;
+        this.minDeliveryPrice = minDeliveryPrice;
+        this.status = status;
+    }
 }
