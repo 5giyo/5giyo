@@ -2,6 +2,7 @@ package com.example.ogiyo.domain.coupon.controller;
 
 
 import com.example.ogiyo.common.dto.ResponseDto;
+import com.example.ogiyo.common.etc.JwtProperties;
 import com.example.ogiyo.domain.coupon.dto.request.CreateCouponRequestDto;
 import com.example.ogiyo.domain.coupon.dto.request.GetCouponRequestDto;
 import com.example.ogiyo.domain.coupon.dto.request.UpdateCouponRequestDto;
@@ -11,16 +12,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-@RestController
 @RequiredArgsConstructor
+@RestController
 @RequestMapping("/api/v1/coupons")
 public class CouponController {
 
-    private CouponServiceImpl couponServiceimpl;
+    private final CouponServiceImpl couponServiceimpl;
 
     @PostMapping
     public ResponseEntity<ResponseDto<?>> createCoupon(
+            @RequestHeader(JwtProperties.HEADER_STRING) String token,
             @Valid @RequestBody CreateCouponRequestDto requestDto
     ) {
         return ResponseEntity.ok(couponServiceimpl.createCoupon(requestDto));
